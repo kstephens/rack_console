@@ -26,7 +26,7 @@ module RackConsole
       haml :'console/method', locals: locals
     end
 
-    get "/methods/:expr/:kind/:name" do
+    get "/methods/:owner/:kind/:name" do
       evaluate_methods!
       haml :'console/methods', locals: locals
     end

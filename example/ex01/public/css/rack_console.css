@@ -30,10 +30,11 @@
   border-spacing: 1px;
 }
 
-.rack_console .eval .io {
+.rack_console .eval .io .result {
   background-color: #000;
   color: #fff;
   width: 95%;
+  padding: 0.5em;
 }
 
 .rack_console span.module_name {
@@ -81,6 +82,11 @@
   border: 1px solid red;
   padding: 0.5em;
   margin: 0.5em;
+}
+
+.rack_console span.none {
+  font-style: italic;
+  font-size: 80%;
 }
 
 .rack_console .methods td.class {

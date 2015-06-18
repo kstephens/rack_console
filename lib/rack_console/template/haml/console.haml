@@ -13,7 +13,7 @@
           %dd.class= format_module(@result.class)
           %dt Value:
           %dd.value
-            %pre.result= h safe_format(@result)
+            %pre.result.literal= h safe_format(@result)
           %dt Extended By:
           %dd.extended_by
             %table
@@ -22,10 +22,18 @@
                   %td= format_module(mod)
           %dt $stdout:
           %dd.io.stdout
-            %pre.result= h (@stdout && @stdout.string.force_encoding('UTF-8'))
+            - out = (@stdout && @stdout.string.force_encoding('UTF-8'))
+            - unless out.blank?
+              %pre.result= h out
+            - else
+              %span.none NONE
           %dt $stderr:
           %dd.io.stderr
-            %pre.result= h (@stderr && @stderr.string.force_encoding('UTF-8'))
+            - out = (@stderr && @stderr.string.force_encoding('UTF-8'))
+            - unless out.blank?
+              %pre.result= h out
+            - else
+              %span.none NONE
 
   =haml :'console/error', locals: locals
 

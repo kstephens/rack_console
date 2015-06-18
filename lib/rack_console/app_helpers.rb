@@ -73,11 +73,10 @@ module RackConsole
     end
 
     def evaluate_methods!
-      pp params
-      @methods = result_capture! do
-        methods_for_selector(params[:name])
+      @methods = nil
+      result_capture! do
+        @methods = methods_matching(params)
       end
-      pp @methods
     end
 
     def prepare_file!
@@ -107,7 +106,7 @@ module RackConsole
 
     def const_get_safe m, name
       m.const_get(name)
-    rescue
+    rescue Object
       "ERROR: #{$!.inspect}"
     end
 
@@ -134,22 +133,36 @@ module RackConsole
       end
     end
 
-    def methods_for_selector name
-      name = name.to_sym
+    def methods_matching params
+      name_p  = params[:name]
+      kind_p  = params[:kind]
+      owner_p = params[:owner]
+
+      name_p  &&= name_p  != '*' && name_p.to_sym
+      kind_p  &&= kind_p  != '*' && kind_p.to_sym
+      owner_p &&= owner_p != '*' && owner_p
+
       methods = [ ]
       seen = { }
       ObjectSpace.each_object(::Module) do | owner |
+        next unless (owner.name rescue nil)
+        next if owner_p && owner_p != owner.name
+
         kind = :instance_method
-        owner.instance_methods(false).each do | mname |
-          if mname.to_sym == name and meth = (owner.instance_method(name) rescue nil) and key = [ owner, kind, mname ] and ! seen[key]
+        owner.instance_methods(false).each do | name |
+          next if name_p && name_p != (name = name.to_sym)
+          next if kind_p && kind_p != kind
+          if meth = (owner.instance_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
             methods << MockMethod.new(meth, name, kind, owner)
           end
         end
 
         kind = :method
-        owner.singleton_methods(false).each do | mname |
-          if mname.to_sym == name and meth = (owner.singleton_method(name) rescue nil) and key = [ owner, kind, mname ] and ! seen[key]
+        owner.singleton_methods(false).each do | name |
+          next if name_p && name_p != (name = name.to_sym)
+          next if kind_p && kind_p != kind
+          if meth = (owner.singleton_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
             methods << MockMethod.new(meth, name, kind, owner)
           end
