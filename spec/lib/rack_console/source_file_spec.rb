@@ -11,6 +11,8 @@ module RackConsole
       it "returns expected lines" do
         subject.narrow_to_block!
         expect(lines) .to_not match(/^\s+class$/)
+        expect(lines) .to_not match(/^\s+def initialize/)
+        expect(lines) .to match(/^\s+attr_reader/)
         expect(lines) .to match(/^\s+def load!/)
         expect(lines) .to match(/^\s+self(\s*)$/)
         expect(lines) .to match(/^\s+end(\s*)$/)
