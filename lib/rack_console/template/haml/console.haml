@@ -1,0 +1,31 @@
+.rack_console
+  .eval
+    - evaluate_expr!
+    %form.expr{action: url_root("/"), method: "post"}
+      %div
+        %textarea.expr{name: 'expr'}=h @expr
+      %div
+        %input{ type: 'submit', value: 'Evaluate' }
+    .result
+      - if @result_evaled && @result_ok
+        %dl
+          %dt Class:
+          %dd.class= format_module(@result.class)
+          %dt Value:
+          %dd.value
+            %pre.result= h safe_format(@result)
+          %dt Extended By:
+          %dd.extended_by
+            %table
+              - (@result_extended || [ ]).each do | mod |
+                %tr
+                  %td= format_module(mod)
+          %dt $stdout:
+          %dd.io.stdout
+            %pre.result= h (@stdout && @stdout.string.force_encoding('UTF-8'))
+          %dt $stderr:
+          %dd.io.stderr
+            %pre.result= h (@stderr && @stderr.string.force_encoding('UTF-8'))
+
+  =haml :'console/error', locals: locals
+

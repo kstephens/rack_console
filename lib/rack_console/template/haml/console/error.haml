@@ -1,0 +1,14 @@
+.error
+  - if @error
+    %dl.error
+      %dt Class:
+      %dd.class=format_module(@error.class)
+      %dt Error:
+      %dd.description=literal_tag(h @error_description)
+      %dt Backtrace:
+      %dd.backtrace
+        %table.backtrace
+          - @error.backtrace.each do | bt |
+            %tr
+              %td=format_backtrace bt
+      

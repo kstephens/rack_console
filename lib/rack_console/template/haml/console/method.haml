@@ -1,0 +1,28 @@
+.rack_console
+  - evaluate_method!
+  .result
+    .method
+      %dl
+      - if @result_evaled && @result_ok
+        %dt Class:
+        %dd= format_module(@method.class)
+        %dt Name:
+        %dd= format_methods(@method.name)
+        %dt Owner:
+        %dd= format_module(@module)
+        %dt Parameters:
+        %dd= h @method.parameters.inspect
+        %dt Arity:
+        %dd= h @method.arity
+        %dt Source Location:
+        %dd= format_source_location(@method_source_location, @method, nil, @module)
+        - if @method_source
+          %dt Source:
+          %dd
+            %table.source_listing
+              - @method_source.lines.each do | line |
+                %tr
+                  %td{class: line[:class] * ' '}= h("%4d %s" % [ line[:line], line[:str] ]).gsub(' ', '&nbsp')
+
+  =haml :'console/error', locals: locals
+            

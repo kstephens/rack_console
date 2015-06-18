@@ -1,0 +1,56 @@
+.rack_console
+  - evaluate_module!
+  .result
+    .module
+      %dl
+        - if @result_evaled && @result_ok
+          %dt Class:
+          %dd= format_module(@result.class)
+          %dt Result:
+          %dd= format_module(@result)
+          - if @is_class
+            %dt Superclass:
+            %dd= format_module(@superclass)
+          %dt Ancestors:
+          %dd
+            %table.ancestors
+              - (@ancestors || [ ]).each do | mod |
+                %tr
+                  %td= format_module(mod)
+          - if @subclasses
+            %dt Subclasses:
+            %dd
+              %table.subclasses
+                - (@subclasses || [ ]).each do | mod |
+                  %tr
+                    %td= format_module(mod)
+          %dt Extended By:
+          %dd
+            %table.extended_by
+              - (@result_extended || [ ]).each do | mod |
+                %tr
+                  %td= format_module(mod)
+          %dt Constants:
+          %dd
+            %table.constants
+              - (@constants || [ ]).each do | name, value |
+                %tr.constant
+                  %td
+                    %tt=h name
+                  %td= format_module(value.class)
+                  %td= value.is_a?(Module) ? format_module(value) : literal_tag(h(limit_string(safe_format(value), 80)))
+          %dt Singleton Methods:
+          %dd
+            %table.singleton_methods
+              - (@singleton_methods || [ ]).each do | m |
+                %tr
+                  %td= format_method(m, :method, @module)                
+          %dt Instance Methods:
+          %dd
+            %table.instance_methods
+              - (@instance_methods || [ ]).each do | m |
+                %tr
+                  %td= format_method(m, :instance_method)
+
+  =haml :'console/error', locals: locals
+

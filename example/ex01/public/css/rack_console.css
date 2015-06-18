@@ -1,0 +1,97 @@
+.rack_console {
+  border: 1px solid black;
+  padding: 1em;
+  font-family: sans-serif;
+}
+
+.rack_console a {
+  text-decoration: none;
+}
+
+.rack_console pre.result {
+  margin: 0px;
+}
+
+.rack_console dt {
+  font-size: 80%;
+  color: #444;
+}
+
+.rack_console dd {
+  margin-left: 0.5em;
+}
+
+.rack_console .eval textarea.expr {
+  width: 80em;
+  height: 20em;
+}
+
+.rack_console table {
+  border-spacing: 1px;
+}
+
+.rack_console .eval .io {
+  background-color: #000;
+  color: #fff;
+  width: 95%;
+}
+
+.rack_console span.module_name {
+  font-family: monospace;
+  color: #833;
+}
+
+.rack_console span.method_name {
+  font-family: monospace;
+  color: #383;
+}
+
+.rack_console span.file_name {
+  font-family: monospace;
+  color: #338;
+}
+
+.rack_console span.literal {
+  font-family: monospace;
+  color: #388;
+} 
+
+.rack_console .source_listing {
+  font-family: monospace;
+}
+
+.rack_console .ruby_core_doc {
+  font-family: monospace;
+  color: #883;
+}
+
+.rack_console tr.constant {
+  vertical-align: top;
+}
+
+.rack_console .source_listing .unselected_line {
+  color: #888;
+}
+
+.rack_console .source_listing .selected_line {
+  font-weight: bold;
+}
+
+.rack_console .error dl.error {
+  border: 1px solid red;
+  padding: 0.5em;
+  margin: 0.5em;
+}
+
+.rack_console .methods td.class {
+  text-align: right;
+}
+
+.rack_console .methods td.kind {
+  font-family: monospace;
+}
+
+.rack_console .methods td.source_location {
+  padding-left: 2em;
+}
+

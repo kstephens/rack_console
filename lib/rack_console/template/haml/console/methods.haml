@@ -1,0 +1,15 @@
+.rack_console
+  .result
+    .methods
+      - if @methods
+        .status=h "Found #{@methods.size} methods:"
+        %table
+          - @methods.each do | meth |
+            %tr.method
+              %td.class=format_module(meth.owner)
+              %td.kind=meth.kind == :instance_method ? "#" : "."
+              %td.name=format_method(meth, meth.kind)
+              %td.source_location=format_source_location(meth.source_location, meth, meth.kind)
+
+  =haml :'console/error', locals: locals
+            

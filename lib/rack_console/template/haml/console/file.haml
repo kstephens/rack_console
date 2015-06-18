@@ -1,0 +1,18 @@
+.rack_console
+  .result
+    .file
+      %dl
+      - if @result_ok
+        %dt File:
+        %dd.file_name=file_name_tag(h @source_file.file)
+        %dt Source:
+        %dd.source
+          %table.source_listing
+            - @source_file.lines.each do | line |
+              %tr.source_line
+                %td{class: line[:class] * ' '}>
+                  %a{name: line[:line]}>
+                  %span.source_line=h("%4d %s" % [ line[:line], line[:str] ]).gsub(' ', '&nbsp;')
+
+  =haml :'console/error', locals: locals
+      

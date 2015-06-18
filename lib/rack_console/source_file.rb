@@ -30,7 +30,7 @@ module RackConsole
     end
 
     def highlight_block!
-      block_indent = nil
+      block_indent = last_line = nil
       @lines.each do | l |
         indent = (l[:str] =~ /^(\s*)\S/ && $1) || ''
         add_classes = block_finished = nil
@@ -42,6 +42,9 @@ module RackConsole
           block_indent = indent.size
         when block_indent && (indent.size  > block_indent || l[:str] =~ /^(\s*)$/)
           add_classes = [ :block, :block_body ]
+        when block_indent && (indent.size  < block_indent)
+          add_classes = nil
+          block_finished = true
         when block_indent &&  indent.size == block_indent
           if l[:str] =~ /^(\s*)(ensure|rescue)\b/
             add_classes = [ :block, :block_body ]
@@ -51,6 +54,7 @@ module RackConsole
             block_indent = nil
             block_finished = true
           end
+          add_classes = [ :block, :block_body ]
         end
         if add_classes
           l[:class].concat(add_classes).delete(:unselected_line)
