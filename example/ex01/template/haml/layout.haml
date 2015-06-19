@@ -1,0 +1,20 @@
+!!!
+%html
+  %head
+    %title rack_console
+    %link(rel="stylesheet" href="/css/rack_console.css")
+  %body
+    .wrapper
+      .header
+        %h1 rack_console
+        %h2 An interactive Ruby console as a Rack App.
+
+      .nav
+        %a{href: "/console"}Console
+
+      .content
+        =yield
+ 
+      .footer
+        %p
+          This is the footer.

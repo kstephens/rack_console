@@ -38,21 +38,12 @@ module RackConsole
 
     helpers do
       include AppHelpers
-      def has_console_access?
-        true
-      end
-
-      def has_file_access? file
-        ! ! $".include?(file)
-      end
-
-      def url_root url
-        url
-      end
-
-      def locals
-        @locals ||= { }
-      end
     end
+
+    def initialize config = { }
+      @config = config
+      super
+    end
+    attr_accessor :config
   end
 end

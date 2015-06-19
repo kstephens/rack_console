@@ -4,6 +4,24 @@ require 'pp'
 
 module RackConsole
   module AppHelpers
+    def has_console_access?
+      true
+    end
+
+    def has_file_access? file
+      ! ! $".include?(file)
+    end
+
+    def url_root url
+      "#{config[:url_root_prefix]}#{url}"
+    end
+
+    def locals
+      @locals ||= { }
+    end
+
+    ###############################
+
     def console!
       if has_console_access?
         haml :console, locals: locals # , :layout => false
