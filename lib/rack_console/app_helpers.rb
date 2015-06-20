@@ -290,6 +290,19 @@ module RackConsole
       %Q{<span class="backtrace">#{html}</span>}
     end
 
+    def wrap_lines str, width = 80
+      str = str.to_s
+      out = ''
+      pos = 0
+      while pos < str.size
+        pos_end = pos + width
+        out << h(str[pos, width])
+        pos += width
+        out << "&nbsp;\u21B5\n" if pos < str.size
+      end
+      out
+    end
+
     def safe_format obj
       begin
         ::PP.pp(obj, '')

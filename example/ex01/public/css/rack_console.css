@@ -22,8 +22,13 @@
 }
 
 .rack_console .eval textarea.expr {
-  width: 80em;
+  width: 95%;
   height: 20em;
+  padding: 0.5em;
+  margin-left: 0.5em;
+  font-family: monospace;
+  background-color: #000;
+  color: #fff;
 }
 
 .rack_console table {

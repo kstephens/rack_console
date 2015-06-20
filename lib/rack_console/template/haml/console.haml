@@ -13,7 +13,7 @@
           %dd.class= format_module(@result.class)
           %dt Value:
           %dd.value
-            %pre.result.literal= h safe_format(@result)
+            %pre.result.literal= wrap_lines(safe_format(@result))
           %dt Extended By:
           %dd.extended_by
             %table
@@ -24,14 +24,14 @@
           %dd.io.stdout
             - out = (@stdout && @stdout.string.force_encoding('UTF-8'))
             - unless out.blank?
-              %pre.result= h out
+              %pre.result= wrap_lines(out)
             - else
               %span.none NONE
           %dt $stderr:
           %dd.io.stderr
             - out = (@stderr && @stderr.string.force_encoding('UTF-8'))
             - unless out.blank?
-              %pre.result= h out
+              %pre.result= wrap_lines(out)
             - else
               %span.none NONE
 
