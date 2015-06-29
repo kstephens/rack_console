@@ -122,6 +122,19 @@ module RackConsole
       @result_class = @result.class.name
     end
 
+    def format_object obj
+      case obj
+      when Module
+        format_module obj
+      else
+        format_other obj
+      end
+    end
+
+    def format_other obj
+      "<pre>" << wrap_lines(safe_format(@result)) << "</pre>"
+    end
+
     def const_get_safe m, name
       m.const_get(name)
     rescue Object

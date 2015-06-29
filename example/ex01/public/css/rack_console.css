@@ -8,10 +8,6 @@
   text-decoration: none;
 }
 
-.rack_console pre.result {
-  margin: 0px;
-}
-
 .rack_console dt {
   font-size: 80%;
   color: #444;
@@ -19,26 +15,49 @@
 
 .rack_console dd {
   margin-left: 0.5em;
+  padding-bottom: 0.5em;
 }
 
 .rack_console .eval textarea.expr {
+  font-family: monospace;
+  font-size: 13px;
   width: 95%;
   height: 20em;
   padding: 0.5em;
   margin-left: 0.5em;
-  font-family: monospace;
   background-color: #000;
   color: #fff;
+}
+
+.rack_console .result {
+  margin: 0px;
+}
+
+.rack_console .result pre {
+  font-family: monospace;
+  font-size: 13px;
+  background-color: #000;
+  color: #fff;
+  width: 95%;
+  margin-top: 0.5em;
+  padding: 0.5em;
 }
 
 .rack_console table {
   border-spacing: 1px;
 }
 
+.rack_console .extended_by table tr td {
+  padding: 0px;
+}
+
 .rack_console .eval .io .result {
+  font-family: monospace;
+  font-size: 13px;
   background-color: #000;
   color: #fff;
   width: 95%;
+  margin-top: 0.5em;
   padding: 0.5em;
 }
 

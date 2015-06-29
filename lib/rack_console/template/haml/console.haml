@@ -1,7 +1,7 @@
 .rack_console
   .eval
     - evaluate_expr!
-    %form.expr{action: url_root("/"), method: "post"}
+    %form{action: url_root("/"), method: "post"}
       %div
         %textarea.expr{name: 'expr'}=h @expr
       %div
@@ -10,30 +10,39 @@
       - if @result_evaled && @result_ok
         %dl
           %dt Class:
-          %dd.class= format_module(@result.class)
-          %dt Value:
-          %dd.value
-            %pre.result.literal= wrap_lines(safe_format(@result))
+          %dd
+            .class= format_module(@result.class)
+          %dt Result:
+          %dd
+            .result
+              ~ format_object(@result)
           %dt Extended By:
-          %dd.extended_by
-            %table
-              - (@result_extended || [ ]).each do | mod |
-                %tr
-                  %td= format_module(mod)
+          %dd
+            .extended_by
+              - extensions = (@result_extended || [ ])
+              - if extensions.empty?
+                %span.none NONE
+              - else
+                %table
+                  - extensions.each do | mod |
+                    %tr
+                      %td= format_module(mod)
           %dt $stdout:
-          %dd.io.stdout
-            - out = (@stdout && @stdout.string.force_encoding('UTF-8'))
-            - unless out.blank?
-              %pre.result= wrap_lines(out)
-            - else
-              %span.none NONE
+          %dd
+            .io.stdout
+              - out = (@stdout && @stdout.string.force_encoding('UTF-8'))
+              - unless out.blank?
+                %pre.result= wrap_lines(out)
+              - else
+                %span.none NONE
           %dt $stderr:
-          %dd.io.stderr
-            - out = (@stderr && @stderr.string.force_encoding('UTF-8'))
-            - unless out.blank?
-              %pre.result= wrap_lines(out)
-            - else
-              %span.none NONE
+          %dd
+            .io.stderr
+              - out = (@stderr && @stderr.string.force_encoding('UTF-8'))
+              - unless out.blank?
+                %pre.result= wrap_lines(out)
+              - else
+                %span.none NONE
 
   =haml :'console/error', locals: locals
 
