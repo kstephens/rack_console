@@ -20,11 +20,23 @@ module RackConsole
       @locals ||= { }
     end
 
+    def layout
+      config[:layout] || :layout
+    end
+
+    def find_template(views, name, engine, &block)
+      views = config[:views] || views
+      Array(views).each do |v|
+        v = config[:views_default] if v == :default
+        super(v, name, engine, &block)
+      end
+    end
+
     ###############################
 
     def console!
       if has_console_access?
-        haml :console, locals: locals # , :layout => false
+        haml :console, locals: locals, layout: layout
       else
         raise "not authorized"
       end

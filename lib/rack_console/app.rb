@@ -6,7 +6,7 @@ require 'haml'
 
 module RackConsole
   class App < Sinatra::Application
-    set :views, "#{File.expand_path('..', __FILE__)}/template/haml"
+    set :views, :default
 
     get '/?' do
       console!
@@ -18,22 +18,22 @@ module RackConsole
 
     get "/module/:expr" do
       evaluate_module!
-      haml :'console/module', locals: locals
+      haml :'console/module', locals: locals, layout: layout
     end
 
     get "/method/:expr/:kind/:name" do
       evaluate_method!
-      haml :'console/method', locals: locals
+      haml :'console/method', locals: locals, layout: layout
     end
 
     get "/methods/:owner/:kind/:name" do
       evaluate_methods!
-      haml :'console/methods', locals: locals
+      haml :'console/methods', locals: locals, layout: layout
     end
 
     get "/file/*" do
       prepare_file!
-      haml :'console/file', locals: locals
+      haml :'console/file', locals: locals, layout: layout
     end
 
     helpers do
@@ -42,6 +42,7 @@ module RackConsole
 
     def initialize config = { }
       @config = config
+      @config[:views_default] ||= "#{File.expand_path('..', __FILE__)}/template/haml"
       super
     end
     attr_accessor :config
