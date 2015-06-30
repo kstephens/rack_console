@@ -1,6 +1,8 @@
 require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
 require 'pp'
+require 'stringio'
+require 'rack_console/ansi_color'
 
 module RackConsole
   module AppHelpers
@@ -145,7 +147,7 @@ module RackConsole
       if inline
         literal_tag(h(limit_string(safe_format(obj), 80)))
       else
-        "<pre>" << wrap_lines(safe_format(obj)) << "</pre>"
+        safe_format_structured(obj)
       end
     end
 
@@ -370,12 +372,33 @@ module RackConsole
       out
     end
 
-    def safe_format obj
+    def safe_format_structured obj
       begin
-        ::PP.pp(obj, '')
+        if config[:awesome_print] && defined?(::AwesomePrint)
+          ansi = obj.ai(indent: 2, html: false)
+          ansi2html(ansi)
+        else
+          '<pre>' << wrap_lines(safe_pp(obj)) << '</pre>'
+        end
       rescue
-        obj.inspect
+        STDERR.puts "  #{$!.inspect}: falling back to #inspect for #{obj.class}\n  #{$!.backtrace * "\n  "}"
+        '<pre>' << wrap_lines(obj.inspect) << '</pre>'
       end
+    end
+
+    def safe_format obj
+      safe_pp(obj)
+    end
+
+    def safe_pp obj
+      ::PP.pp(obj, '')
+    rescue
+      STDERR.puts "  #{$!.inspect}: falling back to #inspect for #{obj.class}\n  #{$!.backtrace * "\n  "}"
+      obj.inspect
+    end
+
+    def ansi2html ansi
+      AnsiColor.new.convert(ansi, '')
     end
   end
 end

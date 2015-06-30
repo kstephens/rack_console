@@ -130,3 +130,66 @@
   padding-left: 2em;
 }
 
+.rack_console .ansi {
+  width: 95%;
+  height: auto;
+  word-wrap: break-word;
+  overflow-x: auto;
+  font-family: monospace;
+  background-color: #000;
+  color: #fff;
+  margin-top: 0.5em;
+  padding: 0.5em;
+}
+
+.ansi .bold {
+    font-weight: bold;
+}
+.ansi .black {
+    color: #000;
+}
+.ansi .red {
+    color: #f44;
+}
+.ansi .green {
+    color: #4f4;
+}
+.ansi .yellow {
+    color: #ff4;
+}
+.ansi .blue {
+    color: #44f;
+}
+.ansi .magenta {
+    color: #f4f;
+}
+.ansi .cyan {
+    color: #4ff;
+}
+.ansi .white {
+    color: #fff;
+}
+.ansi .bg_black {
+    background-color: #000;
+}
+.ansi .bg_red {
+    background-color: #f44;
+}
+.ansi .bg_green {
+    background-color: #4f4;
+}
+.ansi .bg_yellow {
+    background-color: #ff4;
+}
+.ansi .bg_blue {
+    background-color: #44f;
+}
+.ansi .bg_magenta {
+    background-color: #f4f;
+}
+.ansi .bg_cyan {
+    background-color: #4ff;
+}
+.ansi .bg_white {
+    background-color: #fff;
+}
