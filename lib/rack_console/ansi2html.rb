@@ -39,7 +39,7 @@ module RackConsole
     def tag name, cls
       if cls
         tag_b =
-          @tag_b[[name, cls]] || %Q{<#{name} class="#{cls}">}
+          @tag_b[[name, cls]] ||= %Q{<#{name} class="#{cls}">}.freeze
         tag_e =
           @tag_e[name] ||= %Q{</#{name}>}.freeze
         @tags << [ tag_b, tag_e ]
