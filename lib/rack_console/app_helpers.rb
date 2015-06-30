@@ -63,10 +63,8 @@ module RackConsole
             @superclass = @module.superclass
             @subclasses = @module.subclasses.sort_by{|c| c.name || ''}
           end
-          @singleton_methods = @module.methods(false).sort.map{|n| @module.method(n) }
-          @instance_method_names = (@module.instance_methods(false) | @module.private_instance_methods(false) | @module.protected_instance_methods(false)).sort
-          @instance_methods  = @instance_method_names.map{|n| @module.instance_method(n) }
           @constants = @module.constants(false).sort.map{|n| [ n, const_get_safe(@module, n) ]}
+          @methods = methods_for_module(@module)
         end
       end
     end
@@ -77,7 +75,7 @@ module RackConsole
         result_capture! do
           @module = @result
           @method_name = params[:name]
-          @method_kind = params[:kind] =~ /instance/ ? :instance_method : :method
+          @method_kind = params[:kind].to_s =~ /i/ ? :instance_method : :method
           @method = @module.send(@method_kind, @method_name) rescue nil
           unless @method
             @method = @module.send(:method, @method_name)
@@ -122,17 +120,21 @@ module RackConsole
       @result_class = @result.class.name
     end
 
-    def format_object obj
+    def format_object obj, inline = false
       case obj
       when Module
         format_module obj
       else
-        format_other obj
+        format_other obj, inline
       end
     end
 
-    def format_other obj
-      "<pre>" << wrap_lines(safe_format(@result)) << "</pre>"
+    def format_other obj, inline = false
+      if inline
+        literal_tag(h(limit_string(safe_format(obj), 80)))
+      else
+        "<pre>" << wrap_lines(safe_format(obj)) << "</pre>"
+      end
     end
 
     def const_get_safe m, name
@@ -151,8 +153,7 @@ module RackConsole
           name = meth.name
           owner ||= meth.owner
           owner_name = (owner.name || '').gsub('::', '/')
-          kind &&= (owner.instance_method(name) rescue nil) ? :instance_method : :method
-          kind = kind == :method ? 'c' : 'i'
+          kind ||= (owner.instance_method(name) rescue nil) ? :i : :c
           a_name = name.to_s.gsub(/([^a-z0-9_])/i){|m| "-%X" % [ m.ord ]}
           a_name.sub!(/^-/, '')
           a_name = "method-#{kind}-#{a_name}"
@@ -165,48 +166,79 @@ module RackConsole
     end
 
     def methods_matching params
-      name_p  = params[:name]
-      kind_p  = params[:kind]
-      owner_p = params[:owner]
-
-      name_p  &&= name_p  != '*' && name_p.to_sym
-      kind_p  &&= kind_p  != '*' && kind_p.to_sym
-      owner_p &&= owner_p != '*' && owner_p
+      name_p  = match_pred(params[:name], :to_sym)
+      kind_p  = match_pred(params[:kind], :to_sym)
+      owner_p = match_pred(params[:owner])
 
       methods = [ ]
       seen = { }
       ObjectSpace.each_object(::Module) do | owner |
         next unless (owner.name rescue nil)
         next if owner_p && owner_p != owner.name
+        methods_for_module(owner, name_p, kind_p, seen, methods)
+      end
+      sort_methods! methods
+      methods
+    end
 
-        kind = :instance_method
-        owner.instance_methods(false).each do | name |
+    def match_pred value, m = nil
+      if value != '*' && value != ''
+        value = value.send(m) if m
+      else
+        value = nil
+      end
+      value
+    end
+
+    def methods_for_module owner, name_p = nil, kind_p = nil, seen = { }, to_methods = nil
+      methods = to_methods || [ ]
+      kind = :i
+      unless kind_p && kind_p != kind
+        instance_method_names(owner).each do | name |
           next if name_p && name_p != (name = name.to_sym)
-          next if kind_p && kind_p != kind
           if meth = (owner.instance_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
             methods << MockMethod.new(meth, name, kind, owner)
           end
         end
+      end
 
-        kind = :method
-        owner.singleton_methods(false).each do | name |
+      kind = :c
+      unless kind_p && kind_p != kind
+        singleton_method_names(owner).each do | name |
           next if name_p && name_p != (name = name.to_sym)
-          next if kind_p && kind_p != kind
           if meth = (owner.singleton_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
             methods << MockMethod.new(meth, name, kind, owner)
           end
         end
       end
-      methods.sort_by!{|x| x.owner.to_s}
+      sort_methods! methods unless to_methods
       methods
+    end
+
+    def sort_methods! methods
+      methods.sort_by!{|x| [ x.owner.to_s, x.kind, x.name ]}
+    end
+
+    def instance_method_names owner
+      ( owner.instance_methods(false) |
+        owner.private_instance_methods(false) |
+        owner.protected_instance_methods(false)
+        ).sort
+    end
+
+    def singleton_method_names owner
+      owner.singleton_methods(false)
     end
 
     class MockMethod
       attr_accessor :meth, :name, :kind, :owner
       def initialize *args
         @meth, @name, @kind, @owner = args
+      end
+      def instance_method?
+        @kind == :i
       end
       def source_location
         @meth.source_location
@@ -267,8 +299,13 @@ module RackConsole
       owner ||= m.owner
       source_location = m.source_location
       source_location &&= source_location * ":"
-      href = url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
+      href = method_href(m, kind, owner)
       "<a href='#{href}' title='#{source_location}' class='method_name'>#{method_name_tag(h(m.name))}</a>"
+    end
+
+    def method_href m, kind, owner = nil
+      owner ||= m.owner
+      href = url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
     end
 
     def format_methods name

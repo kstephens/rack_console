@@ -110,7 +110,12 @@
 
 .rack_console span.none {
   font-style: italic;
-  font-size: 80%;
+  font-size: 50%;
+}
+
+.rack_console .status {
+  font-style: italic;
+  font-size: 75%;
 }
 
 .rack_console .methods td.class {

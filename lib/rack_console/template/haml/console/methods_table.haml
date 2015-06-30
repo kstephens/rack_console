@@ -1,0 +1,11 @@
+.methods
+  - if methods = locals[:methods]
+    %table
+      - @methods.each do | meth |
+        %tr.method
+          %td.class=format_module(meth.owner)
+          %td.kind
+            %a{href: method_href(meth, meth.kind, meth.owner), title: "Method detail"}=meth.instance_method? ? "#" : "."
+          %td.name=format_methods(meth.name)
+          %td.source_location=format_source_location(meth.source_location, meth, meth.kind)
+    .status{style: "text-align: center"}=h "#{methods.size} methods"
