@@ -71,6 +71,8 @@ module RackConsole
 
     SPAN_END = "</span>".freeze
     BR = "<br/>".freeze
+
+    # https://en.wikipedia.org/wiki/ANSI_escape_code
     CLASS_FOR_CODE = {
       0 => false,
       1 => :bold,
