@@ -27,22 +27,20 @@
                   - extensions.each do | mod |
                     %tr
                       %td= format_module(mod)
+          - format_io = Proc.new do | val |
+            - out = (val && val.string.force_encoding('UTF-8'))
+            - unless out.blank?
+              %pre.result= wrap_lines(out)
+            - else
+              %span.none NONE
           %dt $stdout:
           %dd
             .io.stdout
-              - out = (@stdout && @stdout.string.force_encoding('UTF-8'))
-              - unless out.blank?
-                %pre.result= wrap_lines(out)
-              - else
-                %span.none NONE
+              - format_io[@stdout]
           %dt $stderr:
           %dd
             .io.stderr
-              - out = (@stderr && @stderr.string.force_encoding('UTF-8'))
-              - unless out.blank?
-                %pre.result= wrap_lines(out)
-              - else
-                %span.none NONE
+              - format_io[@stderr]
 
   =haml :'console/error', locals: locals
 
