@@ -1,5 +1,5 @@
 module RackConsole
-  class AnsiColor
+  class Ansi2Html
     def initialize
       @tag_b = { }
       @tag_e = { }

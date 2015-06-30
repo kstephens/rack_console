@@ -2,7 +2,7 @@ require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
 require 'pp'
 require 'stringio'
-require 'rack_console/ansi_color'
+require 'rack_console/ansi2html'
 
 module RackConsole
   module AppHelpers
@@ -375,7 +375,7 @@ module RackConsole
     def safe_format_structured obj
       begin
         if config[:awesome_print] && defined?(::AwesomePrint)
-          ansi = obj.ai(indent: 2, html: false)
+          ansi = obj.ai(indent: 2, html: false, index: false)
           ansi2html(ansi)
         else
           '<pre>' << wrap_lines(safe_pp(obj)) << '</pre>'
@@ -398,7 +398,7 @@ module RackConsole
     end
 
     def ansi2html ansi
-      AnsiColor.new.convert(ansi, '')
+      Ansi2Html.new.convert(ansi, '')
     end
   end
 end
