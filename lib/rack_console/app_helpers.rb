@@ -11,7 +11,7 @@ module RackConsole
     end
 
     def has_file_access? file
-      ! ! $".include?(file)
+      ! ! (file != '(eval)' && $".include?(file))
     end
 
     def url_root url
