@@ -36,6 +36,12 @@ module RackConsole
       haml :'console/file', locals: locals, layout: layout
     end
 
+    get "/css/:path" do | path |
+      halt 404 if path =~ /\.\./
+      content_type 'text/css'
+      send_file "#{css_dir}/#{path}"
+    end
+
     helpers do
       include AppHelpers
     end
@@ -43,6 +49,7 @@ module RackConsole
     def initialize config = { }
       @config = config
       @config[:views_default] ||= "#{File.expand_path('..', __FILE__)}/template/haml"
+      @config[:css_dir] ||= "#{File.expand_path('..', __FILE__)}/template/css"
       super
     end
     attr_accessor :config

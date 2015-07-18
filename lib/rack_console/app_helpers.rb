@@ -34,6 +34,10 @@ module RackConsole
       end
     end
 
+    def css_dir
+      config[:css_dir]
+    end
+
     ###############################
 
     def console!
