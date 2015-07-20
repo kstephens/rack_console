@@ -61,7 +61,8 @@ module RackConsole
             _stdin, _stdout, _stderr = $stdin, $stdout, $stderr
             $stdin, $stdout, $stderr = @stdin, @stdout, @stderr
             begin
-              @result = eval("begin; #{@expr}; end")
+              expr_str = "begin; #{@expr} \n; end"
+              @result = eval(expr_str)
               @result_ok = true
             ensure
               $stdin, $stdout, $stderr = _stdin, _stdout, _stderr
@@ -399,6 +400,15 @@ module RackConsole
     rescue
       STDERR.puts "  #{$!.inspect}: falling back to #inspect for #{obj.class}\n  #{$!.backtrace * "\n  "}"
       obj.inspect
+    end
+
+    def format_as_terminal str
+      str &&= str.to_s.force_encoding('UTF-8')
+      if str.blank?
+        %Q{<span class="none">NONE</span>}
+      else
+        ansi2html(str)
+      end
     end
 
     def ansi2html ansi

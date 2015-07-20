@@ -7,7 +7,6 @@ module RackConsole
 
     def convert str, out = nil
       @str = str.dup
-      STDERR.puts "  #{str.inspect} => html"
       @out = out || ''
       @tags = [ ]
       @out << %Q{<div class="ansi">}
