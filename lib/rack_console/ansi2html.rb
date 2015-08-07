@@ -27,7 +27,7 @@ module RackConsole
             cls = CLASS_FOR_CODE[code]
             tag(:span, cls) unless cls.nil?
           end
-        when /\A.*/
+        when /\A.+/
           text($&)
         end
         @str = $'
@@ -55,13 +55,14 @@ module RackConsole
     end
 
     def text str
+      return if str.empty?
       lines = str.split("\n", 99999)
       last = lines.pop
       lines.each do | line |
-        @out << h(line)
+        @out << h(line) unless line.empty?
         @out << BR
       end
-      @out << h(last)
+      @out << h(last) unless last.empty?
     end
 
     def h(text)
