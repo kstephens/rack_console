@@ -1,4 +1,5 @@
 .rack_console
+  =haml :'console/server_info', locals: locals
   .eval
     - evaluate_expr!
     %form{action: url_root("/"), method: "post"}

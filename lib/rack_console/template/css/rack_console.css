@@ -29,6 +29,34 @@
   color: #fff;
 }
 
+.rack_console .server_info {
+  font-size: 80%;
+  float: right;
+  color: #888;
+}
+
+.rack_console .server_info .key {
+  font-style: italic;
+}
+
+.rack_console .server_info .value {
+}
+
+/* Hover to show */
+.rack_console a.hover_show {
+  text-decoration: none;
+}
+
+.rack_console a.hover_show:hover span {
+  color: #000;
+  display: initial;
+  font-style: bold;
+}
+
+.rack_console span.display_on_hover {
+  display: none;
+}
+
 .rack_console .result {
   margin: 0px;
 }

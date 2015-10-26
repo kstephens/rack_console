@@ -1,0 +1,8 @@
+%span.server_info
+  - k_last = nil; server_info.each do | k, v |
+    = k_last ? " | " : ""
+    - k_last = k
+    %a.hover_show
+      %span.value= h v
+      %span.key
+        %span.display_on_hover= h " : #{k}"

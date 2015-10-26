@@ -1,4 +1,5 @@
 .methods
+  =haml :'console/server_info', locals: locals
   - if methods = locals[:methods]
     %table
       - @methods.each do | meth |

@@ -139,6 +139,16 @@ module RackConsole
       @result_class = @result.class.name
     end
 
+    def server_info
+      thr = Thread.current
+      (config[:server_info] || { }).merge(
+        host: Socket.gethostname,
+        pid: Process.pid,
+        ppid: Process.ppid,
+        thread: thr[:name] || thr.object_id,
+      )
+    end
+
     def format_object obj, inline = false
       case obj
       when Module
