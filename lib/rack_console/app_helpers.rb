@@ -96,10 +96,7 @@ module RackConsole
             @method = @module.send(:method, @method_name)
             @method_kind = :method
           end
-          @method_source_location = @method.source_location
-          @method_source = @method_source_location && SourceFile.new(@method_source_location).load!.narrow_to_block!
           @result = @method
-          @is_method = true
           expr_for_object! @method, @module, @method_kind
         end
       end
@@ -146,15 +143,20 @@ module RackConsole
     ensure
       @result_extended = @result.singleton_class.included_modules rescue nil
       @result_class = @result.class.name
-      if @is_module = Module === @result
+      if @is_module = (::Module === @result)
         @module = @result
         @ancestors = @module.ancestors.drop(1)
-        if @is_class = @module.is_a?(Class)
+        if @is_class = (::Class === @module)
           @superclass = @module.superclass
           @subclasses = @module.subclasses.sort_by{|c| c.name || ''}
         end
         @constants = @module.constants(false).sort.map{|n| [ n, const_get_safe(@module, n) ]}
         @methods = methods_for_module(@module)
+      end
+      if @is_method = (::Method === @result || ::UnboundMethod === @result || MockMethod === @result)
+        @method = @result
+        @method_source_location = @method.source_location
+        @method_source = @method_source_location && SourceFile.new(@method_source_location).load!.narrow_to_block!
       end
     end
 
