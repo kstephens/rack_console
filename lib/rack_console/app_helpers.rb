@@ -79,6 +79,7 @@ module RackConsole
       if @result_ok && @result.is_a?(Module)
         result_capture! do
           @module = @result
+          expr_for_object! @module
         end
       end
     end
