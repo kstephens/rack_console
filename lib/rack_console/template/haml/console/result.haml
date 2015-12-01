@@ -1,0 +1,9 @@
+.result
+  %dl
+    - if @result_evaled && @result_ok
+      = haml :'console/result/basic', locals: locals
+      - if @is_module
+        = haml :'console/result/module', locals: locals
+      - if @is_method
+        = haml :'console/result/method', locals: locals
+

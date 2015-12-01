@@ -1,0 +1,8 @@
+.eval
+  - evaluate_expr!
+  %form{action: url_root("/"), method: "post"}
+    %div
+      %textarea.expr{name: 'expr'}=h @expr
+    %div
+      %input{ type: 'submit', value: 'Evaluate' }
+  = haml :'console/result'

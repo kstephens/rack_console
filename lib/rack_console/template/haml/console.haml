@@ -1,41 +1,5 @@
 .rack_console
   =haml :'console/server_info', locals: locals
-  .eval
-    - evaluate_expr!
-    %form{action: url_root("/"), method: "post"}
-      %div
-        %textarea.expr{name: 'expr'}=h @expr
-      %div
-        %input{ type: 'submit', value: 'Evaluate' }
-    .result
-      - if @result_evaled && @result_ok
-        %dl
-          %dt Class:
-          %dd
-            .class= format_module(@result.class)
-          %dt Result:
-          %dd
-            .result
-              ~ format_object(@result)
-          %dt Extended By:
-          %dd
-            .extended_by
-              - extensions = (@result_extended || [ ])
-              - if extensions.empty?
-                %span.none NONE
-              - else
-                %table
-                  - extensions.each do | mod |
-                    %tr
-                      %td= format_module(mod)
-          %dt $stdout:
-          %dd
-            .io.stdout
-              ~ format_as_terminal(@stdout && @stdout.string)
-          %dt $stderr:
-          %dd
-            .io.stderr
-              ~ format_as_terminal(@stderr && @stderr.string)
-
+  =haml :'console/eval', locals: locals
   =haml :'console/error', locals: locals
 

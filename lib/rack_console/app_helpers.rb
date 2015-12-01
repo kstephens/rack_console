@@ -3,9 +3,12 @@ require 'active_support/core_ext/object/blank'
 require 'pp'
 require 'stringio'
 require 'rack_console/ansi2html'
+require 'rack_console/expr_helpers'
 
 module RackConsole
   module AppHelpers
+    include ExprHelpers
+
     def has_console_access?
       true
     end
@@ -49,6 +52,7 @@ module RackConsole
     end
 
     def evaluate_expr!
+      return if @result_evaled
       result_capture! do
         @stdin  = StringIO.new('')
         @stdout = StringIO.new('')
@@ -58,14 +62,10 @@ module RackConsole
         unless @expr.blank?
           @result_evaled = true
           Timeout.timeout(30) do
-            _stdin, _stdout, _stderr = $stdin, $stdout, $stderr
-            $stdin, $stdout, $stderr = @stdin, @stdout, @stderr
-            begin
+            capture_stdio! do
               expr_str = "begin; #{@expr} \n; end"
               @result = eval(expr_str)
               @result_ok = true
-            ensure
-              $stdin, $stdout, $stderr = _stdin, _stdout, _stderr
             end
           end
         end
@@ -74,22 +74,17 @@ module RackConsole
 
     def evaluate_module!
       evaluate_expr!
+      @show_stdio = @show_result = false
       if @result_ok && @result.is_a?(Module)
         result_capture! do
           @module = @result
-          @ancestors = @module.ancestors.drop(1)
-          if @is_class = @module.is_a?(Class)
-            @superclass = @module.superclass
-            @subclasses = @module.subclasses.sort_by{|c| c.name || ''}
-          end
-          @constants = @module.constants(false).sort.map{|n| [ n, const_get_safe(@module, n) ]}
-          @methods = methods_for_module(@module)
         end
       end
     end
 
     def evaluate_method!
       evaluate_expr!
+      @show_stdio = @show_result = false
       if @result_ok && @result.is_a?(Module)
         result_capture! do
           @module = @result
@@ -103,10 +98,23 @@ module RackConsole
           @method_source_location = @method.source_location
           @method_source = @method_source_location && SourceFile.new(@method_source_location).load!.narrow_to_block!
           @result = @method
+          @is_method = true
+          expr_for_object! @method, @module, @method_kind
         end
       end
     end
 
+    def capture_stdio!
+      @captured_stdio = true
+      _stdin, _stdout, _stderr = $stdin, $stdout, $stderr
+      $stdin, $stdout, $stderr = @stdin, @stdout, @stderr
+      begin
+        yield
+      ensure
+        $stdin, $stdout, $stderr = _stdin, _stdout, _stderr
+      end
+    end
+    
     def evaluate_methods!
       @methods = nil
       result_capture! do
@@ -137,6 +145,16 @@ module RackConsole
     ensure
       @result_extended = @result.singleton_class.included_modules rescue nil
       @result_class = @result.class.name
+      if @is_module = Module === @result
+        @module = @result
+        @ancestors = @module.ancestors.drop(1)
+        if @is_class = @module.is_a?(Class)
+          @superclass = @module.superclass
+          @subclasses = @module.subclasses.sort_by{|c| c.name || ''}
+        end
+        @constants = @module.constants(false).sort.map{|n| [ n, const_get_safe(@module, n) ]}
+        @methods = methods_for_module(@module)
+      end
     end
 
     def server_info

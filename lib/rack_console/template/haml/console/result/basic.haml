@@ -1,0 +1,28 @@
+%dt Class:
+%dd
+  .class= format_module(@result.class)
+- if @show_result != false
+  %dt Result:
+  %dd
+    .result
+      ~ format_object(@result)
+%dt Extended By:
+%dd
+  .extended_by
+    - extensions = (@result_extended || [ ])
+    - if extensions.empty?
+      %span.none NONE
+    - else
+      %table
+        - extensions.each do | mod |
+          %tr
+            %td= format_module(mod)
+- if @captured_stdio && @show_stdio != false
+  %dt $stdout:
+  %dd
+    .io.stdout
+      ~ format_as_terminal(@stdout && @stdout.string)
+  %dt $stderr:
+  %dd
+    .io.stderr
+      ~ format_as_terminal(@stderr && @stderr.string)
