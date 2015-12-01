@@ -4,6 +4,7 @@ require 'pp'
 require 'stringio'
 require 'rack_console/ansi2html'
 require 'rack_console/expr_helpers'
+require 'rack_console/mock_method'
 
 module RackConsole
   module AppHelpers
@@ -298,19 +299,6 @@ module RackConsole
     end
     DUMMY_SOURCE_LOCATION = [ "".freeze, 0 ].freeze
 
-    class MockMethod
-      attr_accessor :meth, :name, :kind, :owner
-      def initialize *args
-        @meth, @name, @kind, @owner = args
-      end
-      def instance_method?
-        @kind == :i
-      end
-      def source_location
-        @meth.source_location
-      end
-    end
-
     def file_line_to_href name, lineno = nil
       link = name.sub(%r{^/}, '-')
       link = link.split('/').map{|s| e s}.join('/')
@@ -411,13 +399,14 @@ module RackConsole
       %Q{<span class="backtrace">#{html}</span>}
     end
 
-    def wrap_lines str, width = 80
+    def wrap_lines str, width = nil
       str.to_s.split("\n").map do | line |
         wrap_line line, width
       end * "\n"
     end
 
-    def wrap_line str, width = 80
+    def wrap_line str, width = nil
+      width ||= config[:wrap_width] || 80
       str = str.to_s
       out = ''
       pos = 0

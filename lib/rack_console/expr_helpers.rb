@@ -1,5 +1,6 @@
 require 'time'
 require 'date'
+require 'rack_console/mock_method'
 
 module RackConsole
   module ExprHelpers
