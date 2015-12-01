@@ -61,7 +61,7 @@ module RackConsole
         @expr = (params[:expr] || '').strip
         unless @expr.blank?
           @result_evaled = true
-          Timeout.timeout(30) do
+          Timeout.timeout(config[:eval_timeout] || 120) do
             capture_stdio! do
               expr_str = "begin; #{@expr} \n; end"
               @result = eval(expr_str)
