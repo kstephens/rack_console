@@ -11,7 +11,14 @@ module RackConsole
     include ExprHelpers
 
     def has_console_access?
-      true
+      case a = config[:authorized?]
+      when true, false
+        a
+      when Proc
+        a.call
+      else
+        true
+      end
     end
 
     def has_file_access? file
@@ -44,12 +51,16 @@ module RackConsole
 
     ###############################
 
-    def console!
+    def with_access
       if has_console_access?
-        haml :console, locals: locals, layout: layout
+        yield
       else
-        raise "not authorized"
+        raise Error, "not authorized"
       end
+    end
+
+    def console!
+      haml :console, locals: locals, layout: layout
     end
 
     def evaluate_expr!

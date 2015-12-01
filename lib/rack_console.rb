@@ -1,5 +1,5 @@
 require "rack_console/version"
 
 module RackConsole
-  # Your code goes here...
+  class Error < ::StandardError; end
 end

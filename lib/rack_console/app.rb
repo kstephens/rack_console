@@ -1,3 +1,4 @@
+require 'rack_console'
 require 'rack_console/source_file'
 require 'rack_console/app_helpers'
 require 'sinatra'
@@ -9,37 +10,51 @@ module RackConsole
     set :views, :default
 
     get '/?' do
-      console!
+      with_access do
+        console!
+      end
     end
 
     post '/?' do
-      console!
+      with_access do
+        console!
+      end
     end
 
     get "/module/:expr" do
-      evaluate_module!
-      haml :'console/module', locals: locals, layout: layout
+      with_access do
+        evaluate_module!
+        haml :'console/module', locals: locals, layout: layout
+      end
     end
 
     get "/method/:expr/:kind/:name" do
-      evaluate_method!
-      haml :'console/method', locals: locals, layout: layout
+      with_access do
+        evaluate_method!
+        haml :'console/method', locals: locals, layout: layout
+      end
     end
 
     get "/methods/:owner/:kind/:name" do
-      evaluate_methods!
-      haml :'console/methods', locals: locals, layout: layout
+      with_access do
+        evaluate_methods!
+        haml :'console/methods', locals: locals, layout: layout
+      end
     end
 
     get "/file/*" do
-      prepare_file!
-      haml :'console/file', locals: locals, layout: layout
+      with_access do
+        prepare_file!
+        haml :'console/file', locals: locals, layout: layout
+      end
     end
 
     get "/methods/file/*" do
-      prepare_file!
-      @methods = methods_within_file(@source_file.file) if @source_file
-      haml :'console/methods', locals: locals, layout: layout
+      with_access do
+        prepare_file!
+        @methods = methods_within_file(@source_file.file) if @source_file
+        haml :'console/methods', locals: locals, layout: layout
+      end
     end
 
     get "/css/:path" do | path |
