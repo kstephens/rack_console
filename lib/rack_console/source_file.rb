@@ -75,6 +75,5 @@ module RackConsole
       end
       self
     end
-
   end
 end

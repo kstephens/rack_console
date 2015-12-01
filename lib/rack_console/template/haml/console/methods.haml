@@ -1,6 +1,11 @@
 .rack_console
   =haml :'console/server_info', locals: locals
   .result
+    - if @source_file
+      %dl
+        %dt File:
+        %dd.file_name
+          =file_name_tag(h @source_file.file)
     =haml :'console/methods_table', locals: locals.merge(methods: @methods)
   =haml :'console/error', locals: locals
             

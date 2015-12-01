@@ -5,7 +5,10 @@
       %dl
       - if @result_ok
         %dt File:
-        %dd.file_name=file_name_tag(h @source_file.file)
+        %dd.file_name
+          =file_name_tag(h @source_file.file)
+          %a{href: source_file_methods_href(@source_file.file)}
+            (methods)
         %dt Source:
         %dd.source
           %table.source_listing

@@ -216,20 +216,21 @@ module RackConsole
       name_p  = match_pred(params[:name], :to_sym)
       kind_p  = match_pred(params[:kind], :to_sym)
       owner_p = match_pred(params[:owner])
+      file_p  = match_pred(params[:file])
 
       methods = [ ]
       seen = { }
       ObjectSpace.each_object(::Module) do | owner |
         next unless (owner.name rescue nil)
         next if owner_p && owner_p != owner.name
-        methods_for_module(owner, name_p, kind_p, seen, methods)
+        methods_for_module(owner, name_p, kind_p, file_p, seen, methods)
       end
       sort_methods! methods
       methods
     end
 
     def match_pred value, m = nil
-      if value != '*' && value != ''
+      if value != nil && value != '*' && value != ''
         value = value.send(m) if m
       else
         value = nil
@@ -237,7 +238,7 @@ module RackConsole
       value
     end
 
-    def methods_for_module owner, name_p = nil, kind_p = nil, seen = { }, to_methods = nil
+    def methods_for_module owner, name_p = nil, kind_p = nil, file_p = nil, seen = { }, to_methods = nil
       methods = to_methods || [ ]
       kind = :i
       unless kind_p && kind_p != kind
@@ -245,6 +246,10 @@ module RackConsole
           next if name_p && name_p != (name = name.to_sym)
           if meth = (owner.instance_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
+            if file_p
+              f = meth.source_location and f = f.first
+              next if f != file_p
+            end
             methods << MockMethod.new(meth, name, kind, owner)
           end
         end
@@ -256,6 +261,10 @@ module RackConsole
           next if name_p && name_p != (name = name.to_sym)
           if meth = (owner.singleton_method(name) rescue nil) and key = [ owner, kind, name ] and ! seen[key]
             seen[key] = true
+            if file_p
+              f = meth.source_location and f = f.first
+              next if f != file_p
+            end
             methods << MockMethod.new(meth, name, kind, owner)
           end
         end
@@ -278,6 +287,16 @@ module RackConsole
     def singleton_method_names owner
       owner.singleton_methods(false)
     end
+
+    def methods_within_file file
+      methods = methods_matching(file: file)
+      sort_methods_by_source_location! methods
+    end
+
+    def sort_methods_by_source_location! methods
+      methods.sort_by!{|x| x.source_location || DUMMY_SOURCE_LOCATION }
+    end
+    DUMMY_SOURCE_LOCATION = [ "".freeze, 0 ].freeze
 
     class MockMethod
       attr_accessor :meth, :name, :kind, :owner
@@ -305,6 +324,11 @@ module RackConsole
       file, line = $1, $3
       file.sub!(/^-/, '/')
       [ file, line && line.to_i ]
+    end
+
+    def source_file_methods_href file
+      link = file.sub(%r{^/}, '-')
+      link = url_root("/methods/file/#{link}")
     end
 
     def source_file source_location

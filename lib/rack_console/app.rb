@@ -36,6 +36,12 @@ module RackConsole
       haml :'console/file', locals: locals, layout: layout
     end
 
+    get "/methods/file/*" do
+      prepare_file!
+      @methods = methods_within_file(@source_file.file) if @source_file
+      haml :'console/methods', locals: locals, layout: layout
+    end
+
     get "/css/:path" do | path |
       halt 404 if path =~ /\.\./
       content_type 'text/css'
