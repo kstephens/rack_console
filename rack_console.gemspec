@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "sinatra", "~> 1.4"
   spec.add_dependency "haml", "~> 4.0"
-  spec.add_dependency "activesupport", "~> 4.2"
+  spec.add_dependency "activesupport", ">= 3.0"
   spec.add_dependency "awesome_print", "~> 1.6"
 
   spec.add_development_dependency "bundler", "~> 1.10"
