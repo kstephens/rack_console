@@ -367,7 +367,15 @@ module RackConsole
       href = url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
     end
 
-    def format_methods name
+    def format_methods obj
+      case obj
+      when nil
+        return nil
+      when ::Method, ::UnboundMethod, MockMethod
+        name = obj.name or return nil
+      else
+        name = obj.to_s
+      end
       href = url_root("/methods/*/*/#{e name}")
       "<a href='#{href}' title='Other methods named #{h name.inspect}' class='method_name'>#{method_name_tag(h(name))}</a>"
     end

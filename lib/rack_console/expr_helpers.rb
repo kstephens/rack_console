@@ -15,17 +15,15 @@ module RackConsole
     
     def expr_for_object obj, mod = nil, kind = nil
       case obj
-      when nil, true, false
-        obj.to_s
-      when Float, Integer
+      when nil, true, false, ::Numeric, ::String
         obj.inspect
-      when Time
+      when ::Time
         "Time.parse(#{obj.iso8601(6).inspect})"
-      when Date
+      when ::Date
         "Date.parse(#{obj.to_s.inspect})"
-      when Module
-        expr_for_object obj
-      when Method, UnboundMethod
+      when ::Module
+        expr_for_module obj
+      when ::Method, ::UnboundMethod, MockMethod
         expr_for_method(mod, obj.name, kind) if mod && kind
       else
         nil
@@ -33,11 +31,11 @@ module RackConsole
     end
 
     def expr_for_method mod, name, kind
-      "#{mod}.#{kind}(#{name.to_sym.inspect})"
+      mod.name && "#{expr_for_module(mod)}.#{kind}(#{name.to_sym.inspect})"
     end
 
-    def expr_for_Module obj
-      obj && obj.name
+    def expr_for_module obj
+      obj && obj.name && "::#{obj.name}"
     end
   end
 end
