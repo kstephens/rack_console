@@ -2,8 +2,7 @@ require 'rack/utils'
 
 module RackConsole
   class Ansi2Html
-    @@tag_b = { }
-    @@tag_e = { }
+    @@tag_cache = { }
 
     def self.convert str, out = nil
       new.convert(str, out)
@@ -41,12 +40,14 @@ module RackConsole
 
     def tag name, cls
       if cls
-        tag_b =
-          @@tag_b[[name, cls]] ||= %Q{<#{name} class="#{cls}">}.freeze
-        tag_e =
-          @@tag_e[name] ||= %Q{</#{name}>}.freeze
-        @tags << [ tag_b, tag_e ]
-        @out << tag_b
+        tag_be =
+          (@@tag_cache[name] ||= { })[cls] ||=
+          [
+          %Q{<#{name} class="#{cls}">}.freeze,
+          %Q{</#{name}>}.freeze,
+          ].freeze
+        @tags << tag_be
+        @out  << tag_be[0]
       else
         tag_pop!
       end
