@@ -51,12 +51,12 @@ module RackConsole
 
     ###############################
 
-    def with_access
-      if has_console_access?
-        yield
-      else
-        raise Error, "not authorized"
-      end
+    def check_access!
+      unauthorized! unless has_console_access?
+    end
+
+    def unauthorized!
+      raise Error, "not authorized"
     end
 
     def console!
