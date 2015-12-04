@@ -134,6 +134,7 @@ module RackConsole
 
     def prepare_file!
       path = params[:splat][0]
+      halt 404 if path =~ /\.\./
       file, line = href_to_file_line(path)
       result_capture! do
         unless has_file_access? file
