@@ -475,7 +475,7 @@ module RackConsole
     end
 
     def ansi2html ansi
-      Ansi2Html.new.convert(ansi, '')
+      Ansi2Html.new.convert(ansi, []) * ''
     end
   end
 end
