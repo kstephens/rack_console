@@ -1,5 +1,7 @@
 .rack_console {
-  border: 1px solid black;
+  color: white;
+  background-color: black;
+  border: 1px solid white;
   padding: 1em;
   font-family: sans-serif;
 }
@@ -10,7 +12,7 @@
 
 .rack_console dt {
   font-size: 80%;
-  color: #444;
+  color: #888;
 }
 
 .rack_console dd {
@@ -48,7 +50,7 @@
 }
 
 .rack_console a.hover_show:hover span {
-  color: #000;
+  color: #aaa;
   display: initial;
   font-style: bold;
 }
@@ -62,6 +64,7 @@
 }
 
 .rack_console .result pre {
+  border: 1px solid white;
   font-family: monospace;
   font-size: 13px;
   background-color: #000;
@@ -89,24 +92,31 @@
   padding: 0.5em;
 }
 
+.rack_console .constant .name {
+  color: #af4;
+}
+.rack_console .constant td {
+  padding-right: 1em;
+}
+
 .rack_console span.module_name {
   font-family: monospace;
-  color: #833;
+  color: #f66;
 }
 
 .rack_console span.method_name {
   font-family: monospace;
-  color: #383;
+  color: #6f6;
 }
 
 .rack_console span.file_name {
   font-family: monospace;
-  color: #338;
+  color: #aaf;
 }
 
 .rack_console span.literal {
   font-family: monospace;
-  color: #388;
+  color: #6ff;
 } 
 
 .rack_console .source_listing {
@@ -115,7 +125,7 @@
 
 .rack_console .ruby_core_doc {
   font-family: monospace;
-  color: #883;
+  color: #ff6;
 }
 
 .rack_console tr.constant {
@@ -123,11 +133,30 @@
 }
 
 .rack_console .source_listing .unselected_line {
-  color: #888;
+  color: #aba;
 }
 
 .rack_console .source_listing .selected_line {
-  font-weight: bold;
+  font-weight: bolder;
+  color: #fff;
+}
+
+.rack_console .source_listing .block_begin {
+  font-weight: bolder;
+  color: #fff;
+  text-decoration: underline;
+}
+
+.rack_console .source_listing .block_body {
+  color: #eee;
+}
+
+.rack_console .file_name * {
+  color: #aaf;
+}
+
+.rack_console .file_name .methods {
+  color: #eee;
 }
 
 .rack_console .error dl.error {
@@ -146,16 +175,23 @@
   font-size: 75%;
 }
 
-.rack_console .methods td.class {
+.rack_console tr.method td.class {
   text-align: right;
 }
 
-.rack_console .methods td.kind {
+.rack_console tr.method td.kind * {
   font-family: monospace;
+  color: #cab;
 }
 
-.rack_console .methods td.source_location {
+.rack_console tr.method td.source_location * {
   padding-left: 2em;
+  color: #aaf;
+}
+
+.rack_console tr.method td.source_location a.ruby_core_doc {
+  padding-left: 6em;
+  color: #77c;
 }
 
 .rack_console .ansi {

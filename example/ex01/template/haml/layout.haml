@@ -2,18 +2,17 @@
 %html
   %head
     %title rack_console
-    %link(rel="stylesheet" href="/console/css/rack_console.css")
-    %link(rel="stylesheet" href="/console/css/ansi.css")
+    %link{rel: "stylesheet", href: url_root("/css/rack_console.css")}
+    %link{rel: "stylesheet", href: url_root("/css/ansi.css")}
   %body
-    .wrapper
-      .header
-        %h1
-          %a{href: "/console"}rack_console
-        %h2 An interactive Ruby console as a Rack App.
+    .rack_console
+      .wrapper
+        .header
+          %h1
+            %a{href:"/console"}rack_console
+          %p Test layout
+        .content
+          =yield
 
-      .content
-        =yield
- 
-      .footer
-        %p
-          This is the footer.
+        .footer
+          %hr
