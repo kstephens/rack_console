@@ -15,7 +15,7 @@ module RackConsole
     
     def expr_for_object obj, mod = nil, kind = nil
       case obj
-      when nil, true, false, ::Numeric, ::String
+      when nil, true, false, ::Numeric, ::String, ::Symbol
         obj.inspect
       when ::Time
         "Time.parse(#{obj.iso8601(6).inspect})"
