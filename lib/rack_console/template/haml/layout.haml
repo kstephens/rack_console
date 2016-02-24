@@ -5,14 +5,13 @@
     %link{rel: "stylesheet", href: url_root("/css/rack_console.css")}
     %link{rel: "stylesheet", href: url_root("/css/ansi.css")}
   %body
-    .wrapper
-      .header
-        %h1 rack_console
-        %h2 An interactive Ruby console as a Rack App.
- 
-      .content
-        =yield
- 
-      .footer
-        %p
-          This is the footer.
+    .rack_console
+      .wrapper
+        .header
+          %h1 rack_console
+
+        .content
+          =yield
+
+        .footer
+          %hr

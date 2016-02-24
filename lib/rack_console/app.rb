@@ -9,52 +9,42 @@ module RackConsole
   class App < Sinatra::Application
     set :views, :default
 
+    before do
+      check_access! unless request.path_info =~ %r{^/css/}
+    end
+
     get '/?' do
-      with_access do
-        console!
-      end
+      console!
     end
 
     post '/?' do
-      with_access do
-        console!
-      end
+      console!
     end
 
     get "/module/:expr" do
-      with_access do
-        evaluate_module!
-        haml :'console/module', locals: locals, layout: layout
-      end
+      evaluate_module!
+      haml :'console/module', locals: locals, layout: layout
     end
 
     get "/method/:expr/:kind/:name" do
-      with_access do
-        evaluate_method!
-        haml :'console/method', locals: locals, layout: layout
-      end
+      evaluate_method!
+      haml :'console/method', locals: locals, layout: layout
     end
 
     get "/methods/:owner/:kind/:name" do
-      with_access do
-        evaluate_methods!
-        haml :'console/methods', locals: locals, layout: layout
-      end
+      evaluate_methods!
+      haml :'console/methods', locals: locals, layout: layout
     end
 
     get "/file/*" do
-      with_access do
-        prepare_file!
-        haml :'console/file', locals: locals, layout: layout
-      end
+      prepare_file!
+      haml :'console/file', locals: locals, layout: layout
     end
 
     get "/methods/file/*" do
-      with_access do
-        prepare_file!
-        @methods = methods_within_file(@source_file.file) if @source_file
-        haml :'console/methods', locals: locals, layout: layout
-      end
+      prepare_file!
+      @methods = methods_within_file(@source_file.file) if @source_file
+      haml :'console/methods', locals: locals, layout: layout
     end
 
     get "/css/:path" do | path |

@@ -15,6 +15,14 @@ module RackConsole
       end
     end
 
+    def check_access!
+      unauthorized! unless has_console_access?
+    end
+
+    def unauthorized!
+      raise Error, "not authorized"
+    end
+
     def has_file_access? file
       ! ! (file != '(eval)' && $".include?(file))
     end

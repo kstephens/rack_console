@@ -37,10 +37,10 @@
     %table.constants
       - @constants.each do | name, value |
         %tr.constant
-          %td
+          %td.name
             %tt=h name
-          %td= format_module(value.class)
-          %td= format_object(value, :inline)
+          %td.value_class= format_module(value.class)
+          %td.value= format_object(value, :inline)
 %dt
   Methods:
 %dd
