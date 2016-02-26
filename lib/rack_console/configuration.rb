@@ -67,6 +67,7 @@ module RackConsole
         pid: Process.pid,
         ppid: Process.ppid,
         thread: thr[:name] || thr.object_id,
+        version: "v#{VERSION}",
       )
     end
   end
