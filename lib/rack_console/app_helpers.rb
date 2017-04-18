@@ -119,7 +119,7 @@ module RackConsole
       result = yield
       @result_ok = true
       result
-    rescue ::StandardError, ::SyntaxError
+    rescue ::StandardError, ::ScriptError
       @error = $!
       @error_description = @error.inspect
     ensure
