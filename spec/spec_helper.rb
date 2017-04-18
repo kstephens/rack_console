@@ -10,3 +10,5 @@ end
 require 'rack_console'
 gem 'pry'
 require 'pry'
+require 'ostruct'
+
