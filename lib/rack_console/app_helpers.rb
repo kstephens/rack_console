@@ -94,7 +94,7 @@ module RackConsole
         $stdin, $stdout, $stderr = _stdin, _stdout, _stderr
       end
     end
-    
+
     def evaluate_methods!
       @methods = nil
       result_capture! do
