@@ -100,6 +100,11 @@ module RackConsole
       module_name_tag(result)
     end
 
+    def format_constant_name mod, name
+      href = constant_name_href(mod, name)
+      "<a href='#{href}' class='constant_name'>#{constant_name_tag(name)}</a>"
+    end
+
     def format_method m, kind, owner = nil
       owner ||= m.owner
       source_location = m.source_location
@@ -108,9 +113,14 @@ module RackConsole
       "<a href='#{href}' title='#{source_location}' class='method_name'>#{method_name_tag(h(m.name))}</a>"
     end
 
+    def constant_name_href mod, name
+      mod_path = "::#{mod.name}::#{name}"
+      url_root("/?expr=#{mod_path}")
+    end
+
     def method_href m, kind, owner = nil
       owner ||= m.owner
-      href = url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
+      url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
     end
 
     def format_methods obj
@@ -136,6 +146,10 @@ module RackConsole
 
     def method_name_tag str
       %Q{<span class="method_name">#{str}</span>}
+    end
+
+    def constant_name_tag str
+      %Q{<span class="constant_name">#{str}</span>}
     end
 
     def literal_tag str
