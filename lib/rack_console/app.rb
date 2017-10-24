@@ -4,6 +4,7 @@ require 'rack_console/app_helpers'
 require 'sinatra'
 require 'tilt/haml'
 require 'haml'
+require 'logger'
 
 module RackConsole
   class App < Sinatra::Application
@@ -57,12 +58,13 @@ module RackConsole
       include AppHelpers
     end
 
-    def initialize config = { }
-      @config = config
+    def initialize config = nil
+      @config = config || { }
       @config[:views_default] ||= "#{File.expand_path('..', __FILE__)}/template/haml"
       @config[:css_dir] ||= "#{File.expand_path('..', __FILE__)}/template/css"
+      @logger = @config[:logger] || ::Logger.new($stderr)
       super
     end
-    attr_accessor :config
+    attr_accessor :config, :logger
   end
 end
