@@ -92,14 +92,16 @@
   padding: 0.5em;
 }
 
-.rack_console .constant .name {
-  color: #af4;
-}
 .rack_console .constant td {
   padding-right: 1em;
 }
 
 .rack_console span.module_name {
+  font-family: monospace;
+  color: #af4;
+}
+
+.rack_console span.constant_name {
   font-family: monospace;
   color: #f66;
 }

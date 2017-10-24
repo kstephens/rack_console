@@ -12,7 +12,7 @@ module RackConsole
       @result_evaled = true
       @result_ok = true
     end
-    
+
     def expr_for_object obj, mod = nil, kind = nil
       case obj
       when nil, true, false, ::Numeric, ::String, ::Symbol
