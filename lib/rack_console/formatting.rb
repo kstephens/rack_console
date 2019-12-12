@@ -102,7 +102,8 @@ module RackConsole
 
     def format_constant_name mod, name
       href = constant_name_href(mod, name)
-      "<a href='#{href}' class='constant_name'>#{constant_name_tag(name)}</a>"
+      result = "<a href='#{href}' class='constant_name'>#{constant_name_tag(name)}</a>"
+      constant_name_tag(result)
     end
 
     def format_method m, kind, owner = nil

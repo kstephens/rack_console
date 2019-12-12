@@ -18,6 +18,29 @@ module RackConsole
       end
     end
 
+    def css_dir
+      config[:css_dir]
+    end
+
+    def eval_context
+      case context = config[:eval_context]
+      when Proc
+        context.call
+      else
+        context
+      end
+    end
+    
+    ###############################
+
+    def check_access!
+      unauthorized! unless has_console_access?
+    end
+
+    def unauthorized!
+      raise Error, "not authorized"
+    end
+
     def console!
       haml :console, locals: locals, layout: layout
     end
