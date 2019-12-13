@@ -1,0 +1,9 @@
+- if @captured_stdio && @show_stdio != false
+  %dt $stdout:
+  %dd
+    .io.stdout
+      ~ format_as_terminal(@stdout && @stdout.string)
+  %dt $stderr:
+  %dd
+    .io.stderr
+      ~ format_as_terminal(@stderr && @stderr.string)
