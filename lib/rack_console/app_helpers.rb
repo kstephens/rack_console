@@ -169,11 +169,66 @@ module RackConsole
       end
     end
 
+=begin
+    def each_module &blk
+      ObjectSpace.each_object(::Module, &blk)
+    end
+=end
+    def each_module &blk
+      (@@each_module ||= find_modules(::Object)).each(&blk)
+    end
+    @@each_module = nil
+
+    def find_modules mod
+      acc = Set.new
+      stack = [ mod ]
+      while m = stack.pop
+        unless acc.include?(m)
+          acc << m
+          m.constants.each do | name |
+            val = begin
+                    const_get_safe(m, name)
+                  rescue Object
+                    nil
+                  end
+            stack << val if Module === val
+          end
+        end
+      end
+      acc = acc.to_a
+      acc
+    end
+
+    # const_get can cause all sorts of autoload behavior.
+    # Therefore we temporarly disable code loading methods.
     def const_get_safe m, name
-      m.const_get(name)
+      neuter_method(::Kernel, :load, :require, :require_relative) do
+        m.const_get(name)
+      end
     rescue Object
       "ERROR: #{$!.inspect}"
     end
 
+    def neuter_method mod, *names
+      save_names = { }
+      names.each do | name |
+        save_name = save_names[name] = :"neuter_method_#{@@method_name_counter += 1}"
+        mod.alias_method save_name, name
+      end
+      begin
+        names.each do | name |
+          mod.define_method(name) {|*args| nil}
+        end
+        yield
+      ensure
+        save_names.each do | name, save_name |
+          mod.alias_method name, save_name
+          mod.remove_method save_name
+        end
+      end
+    end
+    @@method_name_counter = 0
+    
+    extend self
   end
 end

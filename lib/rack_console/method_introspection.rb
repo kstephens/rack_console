@@ -10,7 +10,7 @@ module RackConsole
 
       methods = [ ]
       seen = { }
-      ObjectSpace.each_object(::Module) do | owner |
+      each_module do | owner |
         next unless (owner.name rescue nil)
         next if owner_p && owner_p != owner.name
         methods_for_module(owner, name_p, kind_p, file_p, seen, methods)
