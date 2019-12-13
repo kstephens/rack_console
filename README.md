@@ -1,8 +1,6 @@
 # RackConsole
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rack_console`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A Rack compatible code introspection and navigation console.
 
 ## Installation
 
@@ -12,27 +10,21 @@ Add this line to your application's Gemfile:
 gem 'rack_console'
 ```
 
-And then execute:
+## Example Usage
 
-    $ bundle
+```
+bundle
+cd example/ex01
+bundle exec rackup
+```
 
-Or install it yourself as:
-
-    $ gem install rack_console
-
-## Usage
-
-TODO: Write usage instructions here
+Browse http://localhost:9292/
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake rspec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rack_console.
+Bug reports and pull requests are welcome on GitHub at https://github.com/kstephens/rack_console.
 
 
 ## License
