@@ -1,27 +1,38 @@
 require 'rack/utils'
 
 module RackConsole
+  # Spans delimited by \01...\02 are considered
+  # to be raw HTML.
   class Ansi2Html
     @@tag_cache = { }
 
     def self.convert str, out = nil
-      new.convert(str, out)
+      new(out).convert(str)
     end
 
-    def convert str, out = nil
-      @str = str.dup
-      @out = out || ''
+    def initialize out = nil
+      @out  = out || ''
       @tags = [ ]
-      @out << %Q{<div class="ansi">}
+    end
+
+    def convert str
+      @str = str.dup
+      self << %Q{<div class="ansi">}
       scan!
       tag_pop!
-      @out << %Q{</div>}
+      self << %Q{</div>}
       @out
+    end
+
+    def << str
+      @out << str
     end
 
     def scan!
       until @str.empty?
         case @str
+        when /\A\01([^\02]*)\02/
+          html($1)
         when /\A[^\e]+/
           text($&)
         when /\A\e\[([\d;]+)m/
@@ -47,7 +58,7 @@ module RackConsole
           %Q{</#{name}>}.freeze,
           ].freeze
         @tags << tag_be
-        @out  << tag_be[0]
+        self  << tag_be[0]
       else
         tag_pop!
       end
@@ -55,7 +66,7 @@ module RackConsole
 
     def tag_pop!
       while tag_be = @tags.pop
-        @out << tag_be[1]
+        self << tag_be[1]
       end
     end
 
@@ -64,10 +75,10 @@ module RackConsole
       lines = str.split("\n", 99999)
       last = lines.pop
       lines.each do | line |
-        @out << h(line) unless line.empty?
-        @out << BR
+        self << h(line) unless line.empty?
+        self << BR
       end
-      @out << h(last) unless last.empty?
+      self << h(last) unless last.empty?
     end
 
     def h(text)
