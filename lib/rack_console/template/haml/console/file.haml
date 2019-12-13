@@ -3,7 +3,7 @@
   .result
     .file
       %dl
-      - if @result_ok
+      - if @result_ok && @source_file
         %dt File:
         %dd.file_name
           =file_name_tag(h @source_file.file)

@@ -165,7 +165,11 @@ module RackConsole
       if @is_method = (::Method === @result || ::UnboundMethod === @result || MockMethod === @result)
         @method = @result
         @method_source_location = @method.source_location
-        @method_source = @method_source_location && SourceFile.new(@method_source_location).load!.narrow_to_block!
+        begin
+          @method_source = @method_source_location && SourceFile.new(@method_source_location).load!.narrow_to_block!
+        rescue
+          @method_source = nil
+        end
       end
     end
 
