@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "sinatra", "~> 1.0"
-  spec.add_dependency "haml", "~> 4.0"
+  spec.add_dependency "haml", "~> 5.0"
   spec.add_dependency "activesupport", ">= 3.0"
   spec.add_dependency "awesome_print", "~> 1.0"
 
