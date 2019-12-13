@@ -61,7 +61,7 @@ module RackConsole
           @result_evaled = true
           Timeout.timeout(config[:eval_timeout] || 120) do
             capture_stdio! do
-              @result = eval_expr(eval_target, @expr)
+              @result = eval_expr(eval_target, @expr, eval_binding)
               @result_ok = true
             end
           end
@@ -69,11 +69,11 @@ module RackConsole
       end
     end
 
-    def eval_expr et, expr
+    def eval_expr et, expr, bi
       expr_str = "begin; #{@expr} \n; end"
       case et
       when nil, false
-        eval(expr_str)
+        eval(expr_str, b)
       when Module
         et.module_eval(expr_str)
       else

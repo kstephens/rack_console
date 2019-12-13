@@ -59,6 +59,18 @@ module RackConsole
         et
       end
     end
+    
+    def eval_binding
+      case eb = config[:eval_binding]
+      when Proc
+        eb.call
+      when Binding
+        eb
+      else
+        nil
+      end
+    end
+ 
 
     def server_info
       thr = Thread.current
