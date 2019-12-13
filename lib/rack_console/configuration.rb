@@ -67,7 +67,9 @@ module RackConsole
         pid: Process.pid,
         ppid: Process.ppid,
         thread: thr[:name] || thr.object_id,
-        version: "v#{VERSION}",
+        ruby_engine: (RUBY_ENGINE rescue :UNKNOWN),
+        ruby_version: RUBY_VERSION,
+        rack_console_version: "v#{VERSION}",
       )
     end
   end
