@@ -69,6 +69,7 @@ module RackConsole
         thread: thr[:name] || thr.object_id,
         ruby_engine: (RUBY_ENGINE rescue :UNKNOWN),
         ruby_version: RUBY_VERSION,
+        ruby_platform: RUBY_PLATFORM,
         rack_console_version: "v#{VERSION}",
       )
     end

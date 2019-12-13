@@ -193,7 +193,7 @@ module RackConsole
       while m = stack.pop
         unless acc.include?(m)
           acc << m
-          m.constants.each do | name |
+          m.constants(false).each do | name |
             val = begin
                     const_get_safe(m, name)
                   rescue Object
