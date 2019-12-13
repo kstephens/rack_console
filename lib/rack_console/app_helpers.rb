@@ -22,6 +22,10 @@ module RackConsole
       config[:css_dir]
     end
 
+    def js_dir
+      config[:js_dir]
+    end
+
     def eval_context
       case context = config[:eval_context]
       when Proc

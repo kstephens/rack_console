@@ -1,8 +1,9 @@
 .eval
   - evaluate_expr!
-  %form{action: url_root("/"), method: "post"}
+  %form{id: "rack_console_eval_form", action: url_root("/"), method: "post"}
     %div
-      %textarea.expr{name: 'expr'}=h @expr
+      %textarea.expr{id: "rack_console_eval_expr", class: "expr", name: 'expr'}=h @expr
     %div
-      %input{ type: 'submit', value: 'Evaluate' }
+      %input{ id: "rack_console_eval_submit", type: 'submit', value: 'Evaluate' }
+  = %Q{<script type="text/javascript" src="#{url_root('/js/rack_console.js')}"> </script>}
   = haml :'console/result'

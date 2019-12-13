@@ -11,7 +11,7 @@ module RackConsole
     set :views, :default
 
     before do
-      check_access! unless request.path_info =~ %r{^/css/}
+      check_access! unless request.path_info =~ %r{^/(css/|js/|favicon.ico$)}
     end
 
     get '/?' do
@@ -49,19 +49,34 @@ module RackConsole
     end
 
     get "/css/:path" do | path |
-      halt 404 if path =~ /\.\./
-      content_type 'text/css'
-      send_file "#{css_dir}/#{path}"
+      file! 'text/css', css_dir, path
+    end
+
+    get "/js/:path" do | path |
+      file! 'text/javascript', js_dir, path
+    end
+
+    get "/favicon.ico" do
+      content_type 'text/plain'
+      ''
     end
 
     helpers do
       include AppHelpers
+      def file! ct, dir, path
+        halt 404 if path =~ /\.\./
+        path = "#{dir}/#{path}"
+        halt 404 unless File.file?(path)
+        content_type ct
+        send_file path
+      end
     end
 
     def initialize config = nil
       @config = config || { }
-      @config[:views_default] ||= "#{File.expand_path('..', __FILE__)}/template/haml"
-      @config[:css_dir] ||= "#{File.expand_path('..', __FILE__)}/template/css"
+      @config[:views_default]  ||= "#{File.expand_path('..', __FILE__)}/template/haml"
+      @config[:css_dir]        ||= "#{File.expand_path('..', __FILE__)}/template/css"
+      @config[:js_dir]         ||= "#{File.expand_path('..', __FILE__)}/template/js"
       @logger = @config[:logger] || ::Logger.new($stderr)
       super
     end
