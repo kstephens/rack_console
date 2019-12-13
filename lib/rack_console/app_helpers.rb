@@ -150,6 +150,10 @@ module RackConsole
       @error = $!
       @error_description = @error.inspect
     ensure
+      interpret_result!
+    end
+
+    def interpret_result!
       @result_extended = @result.singleton_class.included_modules rescue nil
       @result_class = @result.class.name
       if @is_module = (::Module === @result)
