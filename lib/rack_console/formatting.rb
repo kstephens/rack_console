@@ -77,6 +77,15 @@ module RackConsole
       Rack::Utils.escape(text.to_s)
     end
 
+    def href obj
+      case obj
+      when Module
+        url_root("/module/#{obj.name}")
+      else RackConsole::MockMethod
+        
+      end
+    end
+    
     def limit_string(text, len)
       text = text.to_s
       if text.size > len
@@ -93,7 +102,7 @@ module RackConsole
       path.each do | n |
         name << n
         href = url_root("/module/#{name}")
-        result << "<a href='#{href}' class='module_name'>#{module_name_tag("#{pre}#{h n}")}</a>"
+        result << %Q~<a href='#{href}' class='module_name'>#{module_name_tag("#{pre}#{h n}")}</a>~
         name << '::'
         pre = '::'
       end
@@ -124,18 +133,25 @@ module RackConsole
       url_root("/method/#{owner.name}/#{e kind.to_s}/#{e m.name}")
     end
 
-    def format_methods obj
-      case obj
+    def methods_href m, kind = nil, owner = nil
+      # owner ||= m.owner
+      case m
       when nil
         return nil
       when ::Method, ::UnboundMethod, MockMethod
-        name = obj.name or return nil
+        name = m.name or return nil
       else
-        name = obj.to_s
+        name = m.to_s
       end
-      href = url_root("/methods/*/*/#{e name}")
+      href = url_root("/methods/#{e(owner ? owner.name : '*')}/#{e(kind || '*')}/#{e name}")
+      [ href, name ]
+    end
+
+    def format_methods obj
+      href, name = methods_href(obj)
       "<a href='#{href}' title='Other methods named #{h name.inspect}' class='method_name'>#{method_name_tag(h(name))}</a>"
     end
+
 
     def file_name_tag str
       %Q{<span class="file_name">#{str}</span>}
@@ -222,7 +238,7 @@ module RackConsole
     end
 
     def ansi2html ansi
-      Ansi2Html.new.convert(ansi, '')
+      Ansi2Html.new('').convert(ansi)
     end
   end
 end
