@@ -82,10 +82,10 @@ module RackConsole
       when Module
         url_root("/module/#{obj.name}")
       else RackConsole::MockMethod
-        
+
       end
     end
-    
+
     def limit_string(text, len)
       text = text.to_s
       if text.size > len
@@ -193,7 +193,7 @@ module RackConsole
     def wrap_line str, width = nil
       width ||= config[:wrap_width] || 80
       str = str.to_s
-      out = ''
+      out = ''.dup
       pos = 0
       while pos < str.size
         out << h(str[pos, width])
@@ -222,7 +222,7 @@ module RackConsole
     end
 
     def safe_pp obj
-      ::PP.pp(obj, '')
+      ::PP.pp(obj, ''.dup)
     rescue
       STDERR.puts "  #{$!.inspect}: falling back to #inspect for #{obj.class}\n  #{$!.backtrace * "\n  "}"
       obj.inspect
@@ -238,7 +238,7 @@ module RackConsole
     end
 
     def ansi2html ansi
-      Ansi2Html.new('').convert(ansi)
+      Ansi2Html.convert(ansi, ''.dup)
     end
   end
 end

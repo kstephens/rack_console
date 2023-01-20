@@ -1,6 +1,7 @@
 require 'rack/utils'
 
 module RackConsole
+  # TODO: Move to devdriven-ruby
   # Spans delimited by \01...\02 are considered
   # to be raw HTML.
   class Ansi2Html
@@ -11,7 +12,7 @@ module RackConsole
     end
 
     def initialize out = nil
-      @out  = out || ''
+      @out  = out || ''.dup
       @tags = [ ]
     end
 
@@ -72,7 +73,7 @@ module RackConsole
 
     def text str
       return if str.empty?
-      lines = str.split("\n", 99999)
+      lines = str.split("\n", -1)
       last = lines.pop
       lines.each do | line |
         self << h(line) unless line.empty?
