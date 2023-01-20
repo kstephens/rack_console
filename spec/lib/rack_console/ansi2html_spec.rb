@@ -38,6 +38,32 @@ module RackConsole
         _ "\e[33;45;m text \e[0m",
           "<div class=\"ansi\"><span class=\"yellow\"><span class=\"bg_magenta\">&nbsp;text&nbsp;</span></span></div>"
       end
+
+      context "8-bit color codes" do
+        _ "\e[38;5;0m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #000000;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;8m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #808080;\">&nbsp;text&nbsp;</span></div>"
+
+        _ "\e[38;5;16m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #000000;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;25m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #005faf;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;94m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #875f00;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;187m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #d7d7af;\">&nbsp;text&nbsp;</span></div>"
+
+        _ "\e[38;5;232m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #080808;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;255m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #eeeeee;\">&nbsp;text&nbsp;</span></div>"
+      end
+
+      context "24-bit color codes" do
+        _ "\e[38;2;16;200;255m text \e[0m",
+        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #10c8ff;\">&nbsp;text&nbsp;</span></div>"
+      end
     end
   end
 end

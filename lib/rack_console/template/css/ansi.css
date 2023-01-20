@@ -10,51 +10,105 @@
 .ansi .underline {
   text-decoration: underline;
 }
+
+/* https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit: VGA colors */
 .ansi .black {
-    color: #000;
-}
-.ansi .red {
-    color: #f44;
-}
-.ansi .green {
-    color: #4f4;
-}
-.ansi .yellow {
-    color: #ff4;
-}
-.ansi .blue {
-    color: #66f;
-}
-.ansi .magenta {
-    color: #f4f;
-}
-.ansi .cyan {
-    color: #4ff;
-}
-.ansi .white {
-    color: #fff;
+    color: #000000;
 }
 .ansi .bg_black {
-    background-color: #000;
+    background-color: #000000;
+}
+.ansi .red {
+    color: #aa0000;
 }
 .ansi .bg_red {
-    background-color: #f44;
+    background-color: #aa0000;
+}
+.ansi .green {
+    color: #00aa00;
 }
 .ansi .bg_green {
-    background-color: #4f4;
+    background-color: #00aa00;
+}
+.ansi .yellow {
+    color: #aa5500;
 }
 .ansi .bg_yellow {
-    background-color: #ff4;
+    background-color: #aa5500;
+}
+.ansi .blue {
+    color: #0000aa;
 }
 .ansi .bg_blue {
-    background-color: #66f;
+    background-color: #0000aa;
+}
+.ansi .magenta {
+    color: #aa00aa;
 }
 .ansi .bg_magenta {
-    background-color: #f4f;
+    background-color: #aa00aa;
+}
+.ansi .cyan {
+    color: #00aaaa;
 }
 .ansi .bg_cyan {
-    background-color: #4ff;
+    background-color: #00aaaa;
+}
+.ansi .white {
+    color: #aaaaaa;
 }
 .ansi .bg_white {
-    background-color: #fff;
+    background-color: #aaaaaa;
 }
+
+/* https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit: VGA colors */
+.ansi .bright_black {
+    color: #555555;
+}
+.ansi .bg_bright_black {
+    background-color: #555555;
+}
+.ansi .bright_red {
+    color: #ff5555;
+}
+.ansi .bg_bright_red {
+    background-color: #ff5555;
+}
+.ansi .bright_green {
+    color: #55ff55;
+}
+.ansi .bg_bright_green {
+    background-color: #55ff55;
+}
+.ansi .bright_yellow {
+    color: #ffff55;
+}
+.ansi .bg_bright_yellow {
+    background-color: #ffff55;
+}
+.ansi .bright_blue {
+    color: #5555ff;
+}
+.ansi .bg_bright_blue {
+    background-color: #5555ff;
+}
+.ansi .bright_magenta {
+    color: #ff55ff;
+}
+.ansi .bg_bright_magenta {
+    background-color: #ff55ff;
+}
+.ansi .bright_cyan {
+    color: #55ffff;
+}
+.ansi .bg_bright_cyan {
+    background-color: #55ffff;
+}
+.ansi .bright_white {
+    color: #ffffff;
+}
+.ansi .bg_bright_white {
+    background-color: #ffffff;
+}
+
+/********************************/
