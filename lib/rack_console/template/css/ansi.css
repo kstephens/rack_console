@@ -50,20 +50,37 @@
     border-radius: 0.5em;
 }
 .ansi .ansi-5 {
-    animation: blinker 0.66s ease-in-out infinite;
+    animation: blink-slow 0.50s ease-in-out infinite;
     /* mix-blend-mode: overlay; */
 }
 .ansi .ansi-6 {
-    animation: blinker 0.33s ease-in-out infinite;
+    animation: blink-rapid 0.33s ease-in-out infinite;
     /* mix-blend-mode: multiply; */
 }
-@keyframes blinker {
+@keyframes blink-slow {
+    25% {
+        opacity: 100%;
+    }
     50% {
         opacity: 0%;
     }
+    75% {
+        opacity: 100%;
+    }
+}
+@keyframes blink-rapid {
+    20% {
+        opacity: 100%;
+    }
+    50% {
+        opacity: 0%;
+    }
+    80% {
+        opacity: 100%;
+    }
 }
 
-.ansi .default_forground {
+.ansi .ansi-39 {
     color: inherit;
 }
 .ansi .ansi-49 {
