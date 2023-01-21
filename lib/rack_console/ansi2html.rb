@@ -38,8 +38,6 @@ module RackConsole
           styles = [ ]
           until codes.empty?
             case code = codes.shift
-            when nil
-              comment("ansi2html : unknown code : #{code}")
             when 0
               close_all_tags!
             when 38, 48 # 8-bit, 24-bit color
@@ -59,37 +57,20 @@ module RackConsole
     end
 
     def color_style code, codes
+      color =
       case color_space = codes.shift
       when 2 # R;G;B
         # https://en.wikipedia.org/wiki/ANSI_escape_code#24-bit
-        color = "#%02x%02x%02x" % codes.shift(3)
+        "#%02x%02x%02x" % codes.shift(3)
       when 5 # 256-color mode
         # https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
-        color = COLOR_8[codes.shift]
+        COLOR_8[codes.shift]
       end
-      raise unless color
-      case code
+      color and case code
       when 38
         "color: #{color}"
       when 48
         "background-color: #{color}"
-      else
-        # "ansi-color-style-space: #{cls}"
-      end
-    end
-
-    def color_8_bit index
-      case index
-      when 0...16
-        COLOR_8_LOOKUP[index]
-      when 16...232
-        index -= 16
-        b = index % 6; index /= 6
-        g = index % 6; index /= 6
-        r = index % 6
-        "#" + COLOR_8_RAMP_6[r] + COLOR_8_RAMP_6[g] + COLOR_8_RAMP_6[b]
-      else
-        COLOR_8_GRAY[index - 232]
       end
     end
 
@@ -102,12 +83,11 @@ module RackConsole
       } +
       ramp_6.flat_map{|r| ramp_6.flat_map{|g| ramp_6.map{|b| "##{r}#{g}#{b}".freeze }}} +
       %w{
-      #080808 #121212 #1c1c1c #262626 #303030 #3a3a3a #444444 #4e4e4e
-      #585858 #626262 #6c6c6c #767676 #808080 #8a8a8a #949494 #9e9e9e
-      #a8a8a8 #b2b2b2 #bcbcbc #c6c6c6 #d0d0d0 #dadada #e4e4e4 #eeeeee
-    }
-    end
-    raise unless COLOR_8.size == 256
+        #080808 #121212 #1c1c1c #262626 #303030 #3a3a3a #444444 #4e4e4e
+        #585858 #626262 #6c6c6c #767676 #808080 #8a8a8a #949494 #9e9e9e
+        #a8a8a8 #b2b2b2 #bcbcbc #c6c6c6 #d0d0d0 #dadada #e4e4e4 #eeeeee
+      }
+    end.each{|s| s.freeze}.freeze
 
     def span classes, styles
       attrs = [ ]
