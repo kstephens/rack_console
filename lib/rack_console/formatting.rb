@@ -238,7 +238,9 @@ module RackConsole
     end
 
     def ansi2html ansi
-      Ansi2Html.convert(ansi, ''.dup)
+      '<div class="ansi">'.dup <<
+      Ansi2Html.convert(ansi, ''.dup) <<
+      '</div>'
     end
   end
 end

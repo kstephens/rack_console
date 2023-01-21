@@ -1,113 +1,171 @@
-.ansi .bold {
+.ansi .ansi-0 {
+    color: inherit;
+    background-color: inherit;
+    opacity: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    text-decoration: inherit;
+    vertical-align: inherit;
+    font-size: inherit;
+    border: inherit;
+    border-radius: inherit;
+}
+.ansi .ansi-1 {
   font-weight: bold;
 }
-.ansi .faint {
+.ansi .ansi-2 {
   font-weight: lighter;
 }
-.ansi .italic {
+.ansi .ansi-22 {
+  font-weight: normal;
+}
+.ansi .ansi-3 {
   font-style: italic;
 }
 .ansi .underline {
   text-decoration: underline;
 }
+.ansi .ansi-21 {
+    border-bottom: double;
+}
+.ansi .overline {
+    text-decoration: overline;
+}
+.ansi .ansi-9 {
+    text-decoration: line-through;
+}
+.ansi .ansi-73 {
+    vertical-align: super;
+    font-size: smaller;
+}
+.ansi .ansi-74 {
+    vertical-align: sub;
+    font-size: smaller;
+}
+.ansi .ansi-51 {
+    border: 1px solid;
+}
+.ansi .ansi-52 {
+    border: 1px solid;
+    border-radius: 0.5em;
+}
+.ansi .ansi-5 {
+    animation: blinker 0.66s ease-in-out infinite;
+    /* mix-blend-mode: overlay; */
+}
+.ansi .ansi-6 {
+    animation: blinker 0.33s ease-in-out infinite;
+    /* mix-blend-mode: multiply; */
+}
+@keyframes blinker {
+    50% {
+        opacity: 0%;
+    }
+}
+
+.ansi .default_forground {
+    color: inherit;
+}
+.ansi .ansi-49 {
+    background-color: inherit;
+}
 
 /* https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit: VGA colors */
-.ansi .black {
+.ansi .ansi-30 {
     color: #000000;
 }
-.ansi .bg_black {
+.ansi .ansi-40 {
     background-color: #000000;
 }
-.ansi .red {
+.ansi .ansi-31 {
     color: #aa0000;
 }
-.ansi .bg_red {
+.ansi .ansi-41 {
     background-color: #aa0000;
 }
-.ansi .green {
+.ansi .ansi-32 {
     color: #00aa00;
 }
-.ansi .bg_green {
+.ansi .ansi-42 {
     background-color: #00aa00;
 }
-.ansi .yellow {
+.ansi .ansi-33{
     color: #aa5500;
 }
-.ansi .bg_yellow {
+.ansi .ansi-43 {
     background-color: #aa5500;
 }
-.ansi .blue {
+.ansi .ansi-34{
     color: #0000aa;
 }
-.ansi .bg_blue {
+.ansi .ansi-44 {
     background-color: #0000aa;
 }
-.ansi .magenta {
+.ansi .ansi-35{
     color: #aa00aa;
 }
-.ansi .bg_magenta {
+.ansi .ansi-45 {
     background-color: #aa00aa;
 }
-.ansi .cyan {
+.ansi .ansi-36{
     color: #00aaaa;
 }
-.ansi .bg_cyan {
+.ansi .ansi-46 {
     background-color: #00aaaa;
 }
-.ansi .white {
+.ansi .ansi-37{
     color: #aaaaaa;
 }
-.ansi .bg_white {
+.ansi .ansi-47 {
     background-color: #aaaaaa;
 }
 
-/* https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit: VGA colors */
-.ansi .bright_black {
+.ansi .black_bright {
     color: #555555;
 }
-.ansi .bg_bright_black {
+.ansi .ansi-100 {
     background-color: #555555;
 }
-.ansi .bright_red {
+.ansi .ansi-91 {
     color: #ff5555;
 }
-.ansi .bg_bright_red {
+.ansi .ansi-101 {
     background-color: #ff5555;
 }
-.ansi .bright_green {
+.ansi .ansi-92 {
     color: #55ff55;
 }
-.ansi .bg_bright_green {
+.ansi .ansi-102 {
     background-color: #55ff55;
 }
-.ansi .bright_yellow {
+.ansi .ansi-93 {
     color: #ffff55;
 }
-.ansi .bg_bright_yellow {
+.ansi .ansi-103 {
     background-color: #ffff55;
 }
-.ansi .bright_blue {
+.ansi .ansi-94 {
     color: #5555ff;
 }
-.ansi .bg_bright_blue {
+.ansi .ansi-104 {
     background-color: #5555ff;
 }
-.ansi .bright_magenta {
+.ansi .ansi-95 {
     color: #ff55ff;
 }
-.ansi .bg_bright_magenta {
+.ansi .ansi-105 {
     background-color: #ff55ff;
 }
-.ansi .bright_cyan {
+.ansi .ansi-96 {
     color: #55ffff;
 }
-.ansi .bg_bright_cyan {
+.ansi .ansi-106 {
     background-color: #55ffff;
 }
-.ansi .bright_white {
+.ansi .ansi-97 {
     color: #ffffff;
 }
-.ansi .bg_bright_white {
+.ansi .ansi-107 {
     background-color: #ffffff;
 }
 

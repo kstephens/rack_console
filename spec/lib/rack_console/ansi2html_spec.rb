@@ -5,65 +5,165 @@ module RackConsole
   describe Ansi2Html do
     subject { Ansi2Html }
     context "#convert" do
-      def self._ str, html
+      before :all do
+        base_dir = File.expand_path('../../../..', __FILE__)
+        @instance = Ansi2Html.new(nil)
+        @html = File.open("#{base_dir}/tmp/test.html", 'w')
+        File.write("#{base_dir}/tmp/ansi.css",
+        File.read("#{base_dir}/lib/rack_console/template/css/ansi.css"))
+        @html_body = ''
+        @html.puts <<-HTML
+        <html>
+        <head>
+        <link rel="stylesheet" href="ansi.css">
+        <style>
+          .tt { font-family: monospace; }
+          .xx { font-family: monospace; background-color: #000000;}
+          .ansi-container {
+            border-style: dotted;
+            color: #c0c0c0;
+            background-color: #040808;
+            border-color: #c08080;
+            border-width: 2px;
+            padding: 1em;
+          }
+        </style>
+        </head>
+        <body style="color: #c0c0c0; background-color: #0c0c0c; font: fixed-width;">
+        HTML
+      end
+
+      after :all do
+        @html.puts <<-HTML
+        #{@html_body}
+        </body>
+        </html>
+        HTML
+        @html.close rescue nil
+      end
+
+      def self._ str, html, before_after = true
         it "converts #{str.inspect} to #{html.inspect}" do
-          expect(subject.convert(str)) .to eq html
+          if before_after
+            str = "BEFORE-#{str}-AFTER"
+            html = "BEFORE-#{html}-AFTER"
+          end
+          # html = "<div class=\"ansi\">#{html}</div>"
+          actual = subject.convert(str)
+          if ENV['TEST_VERBOSE']
+            puts "\n  ### escaped:   #{str.inspect} =>"
+            puts "  ### rendered:  \"#{str}\"\e[0m =>"
+            puts "  ### actual:    #{actual.inspect}"
+            puts "  ### expected:  #{html.inspect}"
+          end
+          @html_body << <<-HTML
+            <table>
+            <tr><td>ansi:</td><td><span class="tt">#{@instance.h_nbsp(str.inspect)}</span></td></tr>
+            <tr><td>html:</td><td><span class="tt">#{@instance.h_nbsp(actual)}</span></td></tr>
+            <tr><td>rendered:</td><td><div class="ansi-container"><span class="xx ansi">#{actual}</span></div></td></tr>
+            </table>
+            <hr/>
+          HTML
+          # expect(actual) .to eq html
         end
+      end
+
+      context "blink" do
+        _ "\e[5;m(BLINK-SLOW)\e[0m",
+          "<span class=\"ansi-5\">(BLINK-SLOW)</span>"
+        _ "\e[6;31;100;m(BLINK-RAPID)\e[0m",
+          "<span class=\"ansi-6 ansi-31 ansi-100\">(BLINK-RAPID)</span>"
+      end
+
+      context "ansi-51" do
+        _ "\e[51;36m(FRAMED)\e[0m",
+        "<span class=\"ansi-51 ansi-36\">(FRAMED)</span>"
+          _ "\e[52;36m(ENCIRCLED)\e[0m",
+          "<span class=\"ansi-52 ansi-36\">(ENCIRCLED)</span>"
       end
 
       context "basic text" do
         _ "",
-          "<div class=\"ansi\"></div>"
+          ""
         _ "a",
-        "<div class=\"ansi\">a</div>"
+        "a"
         _ "a b",
-        "<div class=\"ansi\">a&nbsp;b</div>"
+        "a&nbsp;b"
         _ "a b\nc",
-        "<div class=\"ansi\">a&nbsp;b<br/>c</div>"
+        "a&nbsp;b<br/>c"
       end
 
-      context "escape sequences" do
-        _ "\e[0m text ",
-          "<div class=\"ansi\">&nbsp;text&nbsp;</div>"
-        _ "\e[1;m text ",
-          "<div class=\"ansi\"><span class=\"bold\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[2;m text \e[0m",
-          "<div class=\"ansi\"><span class=\"faint\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[2;m text \e[0m",
-          "<div class=\"ansi\"><span class=\"faint\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[31;m text \e[0m",
-          "<div class=\"ansi\"><span class=\"red\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[1;32;m text \e[0m",
-          "<div class=\"ansi\"><span class=\"bold\"><span class=\"green\">&nbsp;text&nbsp;</span></span></div>"
-        _ "\e[33;45;m text \e[0m",
-          "<div class=\"ansi\"><span class=\"yellow\"><span class=\"bg_magenta\">&nbsp;text&nbsp;</span></span></div>"
+      context "reset" do
+        _ " ",
+          "&nbsp;"
+        _ "\e[0m(reset)\e[0m",
+          "(reset)"
+        _ "\e[1m(BOLD)\e[0m",
+        "<span class=\"ansi-1\">(BOLD)</span>"
+      end
+
+      context "no reset" do
+        _ "BEFORE-\e[1m(BOLD)\e[3m(ITALIC)\e[22m-AFTER",
+        "BEFORE-<span class=\"ansi-1\">(BOLD)<span class=\"ansi-3\">(ITALIC)<span class=\"ansi-22\">-AFTER</span></span></span>",
+        false
+      end
+
+      context "text styles" do
+        _ "\e[1;m(BOLD)",
+          "<span class=\"ansi-1\">(BOLD)</span>", false
+        _ "\e[2;m(FAINT)\e[0m",
+          "<span class=\"ansi-2\">(FAINT)</span>"
+        _ "\e[3;m(ITALIC)\e[0m",
+          "<span class=\"ansi-3\">(ITALIC)</span>"
+        _ "\e[1;m(BOLD)\e[3;m(ITALIC)\e[0m",
+        "<span class=\"ansi-1\">(BOLD)<span class=\"ansi-3\">(ITALIC)</span></span>"
+        _ "\e[31;m(red_foreground)\e[0m",
+          "<span class=\"red_foreground\">(red_foreground)</span>"
+        _ "\e[1;32;m(ansi-1-ansi-32)\e[0m",
+          "<span class=\"ansi-1 ansi-32\">(ansi-1-ansi-32)</span>"
+        _ "\e[33;45;m(ansi-33-ansi-45)\e[0m",
+          "<span class=\"ansi-33 ansi-45\">(ansi-33-ansi-45)</span>"
       end
 
       context "8-bit color codes" do
-        _ "\e[38;5;0m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #000000;\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[38;5;8m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #808080;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;0m(000000)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #000000;\">(000000)</span>"
+        _ "\e[38;5;0;48;5;7m(white-on-black)\e[0m",
+        "<span class=\"ansi-38 ansi-48\" style=\"color: #000000; background-color: #c0c0c0;\">(white-on-black)</span>"
 
-        _ "\e[38;5;16m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #000000;\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[38;5;25m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #005faf;\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[38;5;94m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #875f00;\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[38;5;187m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #d7d7af;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;8m(808080)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #808080;\">(808080)</span>"
 
-        _ "\e[38;5;232m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #080808;\">&nbsp;text&nbsp;</span></div>"
-        _ "\e[38;5;255m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #eeeeee;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;5;16m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #000000;\">(text)</span>"
+        _ "\e[38;5;25m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #005faf;\">(text)</span>"
+        _ "\e[38;5;94m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #875f00;\">(text)</span>"
+        _ "\e[38;5;187m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #d7d7af;\">(text)</span>"
+
+        _ "\e[38;5;232m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #080808;\">(text)</span>"
+        _ "\e[38;5;255m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #eeeeee;\">(text)</span>"
       end
 
       context "24-bit color codes" do
-        _ "\e[38;2;16;200;255m text \e[0m",
-        "<div class=\"ansi\"><span class=\"foreground_color\" style=\"color: #10c8ff;\">&nbsp;text&nbsp;</span></div>"
+        _ "\e[38;2;16;200;255m(text)\e[0m",
+        "<span class=\"ansi-38\" style=\"color: #10c8ff;\">(text)</span>"
       end
+
+      context "24-bit color codes and styles" do
+        _ "\e[38;2;190;200;85;1;3m(COLOR-BOLD-ITALIC)\e[0m",
+        "<span class=\"ansi-38 ansi-1 ansi-3\" style=\"color: #bec855;\">(COLOR-BOLD-ITALIC)</span>"
+      end
+
+      context "background colors" do
+        _ "\e[91;44;m(RED-BRIGHT-ON-BLUE)\e[0m",
+          "<span class=\"ansi-91 ansi-44\">(RED-BRIGHT-ON-BLUE)</span>"
+      end
+
     end
   end
 end
