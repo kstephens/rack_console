@@ -10,15 +10,16 @@ module RackConsole
     end
 
     def initialize out = nil
-      @out  = out || ''.dup
+      @out = out || ''.dup
       @close_tags = [ ]
       @attributes = { }
-      @styles = {}
+      @styles = { }
+      @tag_cache = { }
+      @tag_cache_size = 100
     end
 
     def convert str
-      @str = str.dup
-      scan!
+      scan! str
       close_all_tags!
       @out
     end
@@ -54,9 +55,9 @@ module RackConsole
       Rack::Utils.escape_html(text.to_s)
     end
 
-    def scan!
-      until @str.empty?
-        case @str
+    def scan! str
+      until str.empty?
+        case str
         when /\A\01([^\02]*)\02/
           html($1)
         when /\A[^\e]+/
@@ -67,29 +68,39 @@ module RackConsole
           if classes != @classes || styles != @styles
             close_all_tags!
             unless classes.empty? && styles.empty?
-              self << span(classes, styles)
+              self << tag_cached(:span, classes, styles)
               @close_tags.push(SPAN_)
             end
+            @classes, @styles = classes, styles
           end
-          @classes, @styles = classes, styles
         when /\A.+/
           text($&)
         end
-        @str = $'
+        str = $'
       end
       self
     end
 
-    def span classes, styles
-      tag = '<span'.dup
+    def tag_cached name, classes, styles
+      @tag_cache.shift if @tag_cache.size > @tag_cache_size
+      # @tag_cache_hits ||= Hash.new{|h, k| h[k] = 0}
+      # @tag_cache_hits[[name, classes, styles]] += 1
+      @tag_cache[[name, classes, styles]] ||=
+        tag(name, classes, styles)
+    end
+
+    def tag name, classes, styles
+      tag = "<#{name}"
       unless classes.empty?
         tag << ' class="'
-        classes.each{|cls| tag << "#{cls} "}
+        sep = Empty_String
+        classes.each{|cls| tag << sep << "#{cls}" ; sep = ' '}
         tag << '"'
       end
       unless styles.empty?
         tag << ' style="'
-        styles.each{|(k, v)| tag << "#{k}: #{v}; " }
+        sep = Empty_String
+        styles.each{|(k, v)| tag << sep << "#{k}: #{v};"; sep = ' ' }
         tag << '"'
       end
       tag << '>'
@@ -216,6 +227,7 @@ module RackConsole
       }
     end.each{|s| s.freeze}.freeze
 
+    Empty_String = ''.freeze
     Empty_Hash = {}.freeze
     SPAN_ = '</span>'.freeze
     BR = "<br/>".freeze

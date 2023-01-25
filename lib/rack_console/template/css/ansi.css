@@ -2,6 +2,7 @@
     color: inherit;
     background-color: inherit;
     opacity: inherit;
+    font-family: inherit;
     font-weight: inherit;
     font-style: inherit;
     text-decoration: inherit;
@@ -12,6 +13,9 @@
     font-size: inherit;
     border: inherit;
     border-radius: inherit;
+    -webkit-filter: inherit;
+    filter: inherit;
+    mix-blend-mode: inherit;
 }
 
 .ansi .ansi-1 {
@@ -56,6 +60,9 @@
     border: 1px solid;
     border-radius: 0.5em;
 }
+.ansi .ansi-26 {
+    font-family: sans-serif;
+}
 .ansi .ansi-5 {
     animation: ansi-blink-keyframes 0.50s ease-in-out infinite;
     /* mix-blend-mode: overlay; */
@@ -64,6 +71,22 @@
     animation: ansi-blink-keyframes 0.33s ease-in-out infinite;
     /* mix-blend-mode: multiply; */
 }
+.ansi .ansi-7 {
+    mix-blend-mode: difference;
+    /*
+    This doesnt work
+    * https://stackoverflow.com/questions/17741629/how-can-i-invert-color-using-css
+    * https://www.bram.us/2021/01/14/css-mix-blend-mode-not-working-set-a-background-color/
+    */
+    /*
+    background-blend-mode: difference;
+    mix-blend-mode: difference;
+
+    filter: invert(100%);
+    -webkit-filter: invert(100%);
+    */
+}
+
 @keyframes ansi-blink-keyframes {
     0% {
         opacity: 100%;
