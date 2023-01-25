@@ -30,11 +30,15 @@ module RackConsole
       @out << str
     end
 
-    def html str
-      self << Rack::Utils.escape_html(text.to_s)
+    def raw! str
+      self << str.to_s
     end
 
-    def text str
+    def html! str
+      self << Rack::Utils.escape_html(str.to_s)
+    end
+
+    def text! str
       return if str.empty?
       lines = str.split("\n", -1)
       last = lines.pop
@@ -45,7 +49,7 @@ module RackConsole
       self << h_nbsp(last) unless last.empty?
     end
 
-    def comment str
+    def comment! str
       self << "<!-- #{h(str)} -->"
     end
 
@@ -60,10 +64,10 @@ module RackConsole
     def scan! str
       until str.empty?
         case str
-        when /\A\01([^\02]*)\02/
-          html($1)
-        when /\A[^\e]+/
-          text($&)
+        when /\A\01([^\02]*?)\02/
+          html!($1)
+        when /\A\03([^\04]*?)\04/
+          raw!($1)
         when /\A\e\[([\d;]+)m/
           codes = $1.split(';').reject(&:empty?).map(&:to_i)
           classes, styles = classes_styles_for_codes codes, @attributes, @styles.dup
@@ -75,8 +79,8 @@ module RackConsole
             end
             @classes, @styles = classes, styles
           end
-        when /\A.+/
-          text($&)
+        when /\A[^\01\03\e]+/
+          text!($&)
         end
         str = $'
       end
