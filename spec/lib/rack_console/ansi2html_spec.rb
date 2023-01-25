@@ -247,6 +247,8 @@ module RackConsole
       context "complex" do
         _ "\e[1;5;3;52;92;4;58;2;255;55;55;48;2;64;64;64;m(BLINK-BOLD-ITALIC-RED-UNDERLINED-ENCIRCLED-BRIGHT-GREEN-ON-GRAY)\e[0m",
         "<span class=\"ansi-1 ansi-3 ansi-4 ansi-5 ansi-52 ansi-92\" style=\"text-decoration-color: #ff3737; background-color: #404040;\">(BLINK-BOLD-ITALIC-RED-UNDERLINED-ENCIRCLED-BRIGHT-GREEN-ON-GRAY)</span>"
+        _ "\e[1;5;4;52m(THIS)\e[22;25;73;3m(THAT)\e[0m",
+          "<span class=\"ansi-1 ansi-4 ansi-5 ansi-52\">(THIS)</span><span class=\"ansi-3 ansi-4 ansi-52 ansi-73\">(THAT)</span>"
       end
 
       context "summary" do
