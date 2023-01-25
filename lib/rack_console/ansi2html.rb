@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack/utils'
 
 module RackConsole
@@ -90,7 +92,7 @@ module RackConsole
     end
 
     def tag name, classes, styles
-      tag = "<#{name}"
+      tag = "<#{name}".dup
       unless classes.empty?
         tag << ' class="'
         sep = Empty_String
@@ -153,7 +155,7 @@ module RackConsole
       proportional: [ 26 ],
       foreground: (30 .. 38).to_a + (90 .. 97).to_a,
       background: (40 .. 48).to_a + (100 .. 107).to_a,
-      framed: (51 .. 52),
+      framed: [51, 52],
       overline: [ 53 ],
       underline_color: [ 58 ],
       subscript: [ 73, 74 ],
