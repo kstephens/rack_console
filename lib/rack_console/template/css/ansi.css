@@ -5,13 +5,17 @@
     font-weight: inherit;
     font-style: inherit;
     text-decoration: inherit;
+    text-decoration-line: inherit;
+    text-decoration-style: inherit;
+    text-decoration-color: inherit;
     vertical-align: inherit;
     font-size: inherit;
     border: inherit;
     border-radius: inherit;
 }
+
 .ansi .ansi-1 {
-  font-weight: bold;
+  font-weight: bolder;
 }
 .ansi .ansi-2 {
   font-weight: lighter;
@@ -22,14 +26,17 @@
 .ansi .ansi-3 {
   font-style: italic;
 }
-.ansi .underline {
-  text-decoration: underline;
+.ansi .ansi-4 {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
 }
 .ansi .ansi-21 {
-    border-bottom: double;
+    text-decoration-line: underline;
+    text-decoration-style: double;
 }
-.ansi .overline {
-    text-decoration: overline;
+.ansi .ansi-53 {
+    text-decoration-line: overline;
+    text-decoration-style: solid;
 }
 .ansi .ansi-9 {
     text-decoration: line-through;
@@ -50,41 +57,45 @@
     border-radius: 0.5em;
 }
 .ansi .ansi-5 {
-    animation: blink-slow 0.50s ease-in-out infinite;
+    animation: ansi-blink-keyframes 0.50s ease-in-out infinite;
     /* mix-blend-mode: overlay; */
 }
 .ansi .ansi-6 {
-    animation: blink-rapid 0.33s ease-in-out infinite;
+    animation: ansi-blink-keyframes 0.33s ease-in-out infinite;
     /* mix-blend-mode: multiply; */
 }
-@keyframes blink-slow {
-    25% {
+@keyframes ansi-blink-keyframes {
+    0% {
+        opacity: 100%;
+    }
+    35% {
         opacity: 100%;
     }
     50% {
         opacity: 0%;
     }
-    75% {
-        opacity: 100%;
-    }
-}
-@keyframes blink-rapid {
-    20% {
-        opacity: 100%;
-    }
-    50% {
-        opacity: 0%;
-    }
-    80% {
+    65% {
         opacity: 100%;
     }
 }
 
+.ansi .ansi-38 {
+    color: inherit;
+}
 .ansi .ansi-39 {
     color: inherit;
 }
+.ansi .ansi-48 {
+    background-color: inherit;
+}
 .ansi .ansi-49 {
     background-color: inherit;
+}
+.ansi .ansi-58 {
+    text-decoration-color: inherit;
+}
+.ansi .ansi-59 {
+    text-decoration-color: inherit;
 }
 
 /* https://en.wikipedia.org/wiki/ANSI_escape_code#3-bit_and_4-bit: VGA colors */
@@ -112,25 +123,25 @@
 .ansi .ansi-43 {
     background-color: #aa5500;
 }
-.ansi .ansi-34{
+.ansi .ansi-34 {
     color: #0000aa;
 }
 .ansi .ansi-44 {
     background-color: #0000aa;
 }
-.ansi .ansi-35{
+.ansi .ansi-35 {
     color: #aa00aa;
 }
 .ansi .ansi-45 {
     background-color: #aa00aa;
 }
-.ansi .ansi-36{
+.ansi .ansi-36 {
     color: #00aaaa;
 }
 .ansi .ansi-46 {
     background-color: #00aaaa;
 }
-.ansi .ansi-37{
+.ansi .ansi-37 {
     color: #aaaaaa;
 }
 .ansi .ansi-47 {
