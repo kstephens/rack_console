@@ -129,11 +129,7 @@ module RackConsole
         when 0
           attributes.clear
           styles.clear
-        when 38 # foreground: 8-bit LUT, 24-bit color
-          styles.update(color_style(code, codes))
-        when 48 # background: 8-bit LUT, 24-bit color
-          styles.update(color_style(code, codes))
-        when 58 # underline: 8-bit LUT, 24-bit color
+        when 38, 48, 58 # foreground, background, underline: 8-bit LUT, 24-bit color:
           styles.update(color_style(code, codes))
         else
           if attribute = CODE_TO_ATTRIBUTE[code]

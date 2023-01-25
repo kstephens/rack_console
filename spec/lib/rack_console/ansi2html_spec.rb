@@ -85,16 +85,6 @@ module RackConsole
 
       ###################################################
 
-      context "HTML text" do
-        _ "HTML text: \01 ESC-HERE:\e <b>bold</b> \02 AFTER",
-          "HTML&nbsp;text:&nbsp; ESC-HERE:\e &lt;b&gt;bold&lt;&#x2F;b&gt; &nbsp;AFTER"
-      end
-
-      context "raw characters" do
-        _ "raw: \03 <b>bold</b> \04 AFTER",
-          "raw:&nbsp; <b>bold</b> &nbsp;AFTER"
-      end
-
       context "basic text" do
         _ "",
           ""
@@ -104,6 +94,16 @@ module RackConsole
         "a&nbsp;b"
         _ "a b\nc",
         "a&nbsp;b<br/>c"
+      end
+
+      context "HTML text" do
+        _ "HTML text: \01 ESC-HERE:\e <b>bold</b> \02 AFTER",
+          "HTML&nbsp;text:&nbsp; ESC-HERE:\e &lt;b&gt;bold&lt;&#x2F;b&gt; &nbsp;AFTER"
+      end
+
+      context "raw characters" do
+        _ "raw: \03 <b>bold</b> \04 AFTER",
+          "raw:&nbsp; <b>bold</b> &nbsp;AFTER"
       end
 
       context "reset" do
