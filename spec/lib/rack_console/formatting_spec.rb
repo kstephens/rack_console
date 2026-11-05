@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # encoding: UTF-8
-# -*- coding: utf-8 -*-
+
 require 'spec_helper'
 require 'rack_console/formatting'
 
@@ -44,6 +45,37 @@ module RackConsole
       let(:meth) { Formatting.instance_method(:format_method) }
       it "returns HTML" do
         expect(subject.format_method(meth, :i)).to match(%r{<a href='//method/RackConsole::Formatting/i/format_method' title='.*lib/rack_console/formatting.rb:\d+' class='method_name'><span class=\"method_name\">format_method</span></a>})
+      end
+    end
+  end
+
+  describe SemanticVersion do
+    subject { SemanticVersion.new("1.2.3", 3) }
+
+    context "#dec!" do
+      it "carries" do
+        [
+          "1.2.3",
+          "1.2.2",
+          "1.2.1",
+          "1.2.0",
+          "1.1.3",
+          "1.1.2",
+          "1.1.1",
+          "1.1.0",
+          "1.0.3",
+          "1.0.2",
+          "1.0.1",
+          "1.0.0",
+          "0.3.3",
+          "0.3.2",
+          "0.3.1",
+          "0.3.0",
+          "0.2.3",
+        ].each do | expected |
+          expect(subject.to_s).to eq expected
+          subject.dec!
+        end
       end
     end
   end

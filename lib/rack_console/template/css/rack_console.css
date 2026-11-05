@@ -6,6 +6,11 @@
   font-family: sans-serif;
 }
 
+.rack_console annotation {
+  color: #444;
+  font-style: italic;
+}
+
 .rack_console a {
   text-decoration: none;
 }
@@ -61,6 +66,10 @@
 
 .rack_console .result {
   margin: 0px;
+}
+
+.rack_console .result .formatted .ansi {
+  background-color: #aaa;
 }
 
 .rack_console .result pre {
@@ -119,7 +128,7 @@
 .rack_console span.literal {
   font-family: monospace;
   color: #6ff;
-} 
+}
 
 .rack_console .source_listing {
   font-family: monospace;

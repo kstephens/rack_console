@@ -3,7 +3,8 @@ $:.unshift "."
 require 'rack_console/app'
 require 'app'
 require 'ostruct'
-use Rack::Reloader
+
+use Rack::Reloader, 0
 
 eval_target = Module.new
 eval_binding = eval_target.instance_eval{|| binding}

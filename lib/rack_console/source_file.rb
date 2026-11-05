@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RackConsole
   class SourceFile
     attr_reader :file, :line
@@ -10,7 +12,6 @@ module RackConsole
 
     def load!
       @lines ||= File.read(@file).split("\n")
-
       line = 0
       @lines.map! do | l |
         line += 1
@@ -74,6 +75,10 @@ module RackConsole
         @lines = @lines.select{|l| l[:line] <= lineno }
       end
       self
+    end
+
+    def find_line rx
+      @lines.find{|l| rx.match?(l[:str])}
     end
   end
 end

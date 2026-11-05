@@ -12,7 +12,7 @@ module RackConsole
     end
 
     def initialize out = nil
-      @out = out || ''.dup
+      @out = (out || '').dup
       @close_tags = [ ]
       @attributes = { }
       @styles = { }
@@ -227,7 +227,7 @@ module RackConsole
         #585858 #626262 #6c6c6c #767676 #808080 #8a8a8a #949494 #9e9e9e
         #a8a8a8 #b2b2b2 #bcbcbc #c6c6c6 #d0d0d0 #dadada #e4e4e4 #eeeeee
       }
-    end.each{|s| s.freeze}.freeze
+    end.each(&:freeze).freeze
 
     Empty_String = ''.freeze
     Empty_Hash = {}.freeze

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'active_support/core_ext/class/subclasses'
 require 'active_support/core_ext/object/blank'
 require 'stringio'
@@ -34,7 +36,7 @@ module RackConsole
         context
       end
     end
-    
+
     ###############################
 
     def check_access!
@@ -236,7 +238,7 @@ module RackConsole
       end
     end
     @@method_name_counter = 0
-    
+
     extend self
   end
 end

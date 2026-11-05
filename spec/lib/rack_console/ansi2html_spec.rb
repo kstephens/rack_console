@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'rack_console/ansi2html'
 
@@ -16,7 +18,7 @@ module RackConsole
         @html = File.open("#{base_dir}/tmp/test.html", 'w')
         File.write("#{base_dir}/tmp/ansi.css",
         File.read("#{base_dir}/lib/rack_console/template/css/ansi.css"))
-        @html_body = ''
+        @html_body = ''.dup
         @html.puts <<-HTML
         <!DOCTYPE html>
         <html>
@@ -78,7 +80,14 @@ module RackConsole
         it "converts ANSI #{input.inspect} to HTML #{expected.inspect}" do
           actual, expected = do_it(input, expected)
           if expected #  && false
-            expect(actual) .to eq(expected), "actual: #{actual.inspect}"
+            if actual != expected
+              msg = <<-"END"
+                input:    | #{input.inspect} |
+                expected: | #{expected.inspect} |
+                actual:   | #{actual.inspect} |
+              END
+            end
+            expect(actual) .to eq(expected), msg
           end
         end
       end
@@ -98,7 +107,7 @@ module RackConsole
 
       context "HTML text" do
         _ "HTML text: \01 ESC-HERE:\e <b>bold</b> \02 AFTER",
-          "HTML&nbsp;text:&nbsp; ESC-HERE:\e &lt;b&gt;bold&lt;&#x2F;b&gt; &nbsp;AFTER"
+          "HTML&nbsp;text:&nbsp; ESC-HERE:\e &lt;b&gt;bold&lt;/b&gt; &nbsp;AFTER"
       end
 
       context "raw characters" do

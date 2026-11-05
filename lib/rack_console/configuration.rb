@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'time'
 require 'date'
 require 'rack_console/mock_method'
@@ -59,7 +61,7 @@ module RackConsole
         et
       end
     end
-    
+
     def eval_binding
       case eb = config[:eval_binding]
       when Proc
@@ -70,7 +72,7 @@ module RackConsole
         nil
       end
     end
- 
+
 
     def server_info
       thr = Thread.current

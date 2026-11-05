@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'pp'
 
 # A version of PP that calls an annotater

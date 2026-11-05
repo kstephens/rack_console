@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rack_console'
 require 'rack_console/source_file'
 require 'rack_console/app_helpers'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RackConsole
   class MockMethod
     attr_accessor :meth, :name, :kind, :owner

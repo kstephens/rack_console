@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 # encoding: UTF-8
+
 require 'time'
 require 'date'
 require 'pp'
@@ -25,31 +27,71 @@ module RackConsole
 
     def format_source_location source_location, meth = nil, kind = nil, owner = nil
       file, line = source_location
-      if file
-        "<a href='#{file_line_to_href file, line}' class='file_name'>#{file_name_tag("#{file}:#{line}")}</a>"
+      case
+      when file && file.include?("<")
+        ruby_core_a_href(meth, kind, owner, true)
+      when file
+        file_line_a_href(file, line)
+      when meth
+        ruby_core_a_href(meth, kind, owner, false)
       else
-        if meth
-          # Assume meth is Ruby Core and link to rdocs on ruby-doc.org.
-          name = meth.name
-          owner ||= meth.owner
-          owner_name = (owner.name || '').gsub('::', '/')
-          kind ||= (owner.instance_method(name) rescue nil) ? :i : :c
-          a_name = name.to_s.gsub(/([^a-z0-9_])/i){|m| "-%X" % [ m.ord ]}
-          a_name.sub!(/^-/, '')
-          a_name = "method-#{kind}-#{a_name}"
-          ruby_core_link = "http://www.ruby-doc.org/core-#{RUBY_VERSION}/#{owner_name}.html\##{a_name}"
-          "<a href='#{ruby_core_link}' class='ruby_core_doc'>#{h ruby_core_link}</a>"
-        else
-          "NONE"
-        end
+        "NONE"
       end
     end
 
-    def file_line_to_href name, lineno = nil
-      link = name.sub(%r{^/}, '-')
+    def file_line_a_href file, line
+      "<a href='#{file_line_to_href file, line}' class='file_name'>#{file_name_tag("#{file}:#{line}")}</a>"
+    end
+
+    def ruby_core_a_href meth, kind, owner, internal
+      ruby_core_link = ruby_core_link(meth, kind, owner, internal)
+      text = ruby_core_link
+      # text += " *" if internal
+      "<a href='#{ruby_core_link}' class='ruby_core_doc'>#{h text}</a>"
+    end
+
+    def ruby_core_link meth, kind, owner, internal
+        # Assume meth is Ruby Core and link to rdocs on ruby-doc.org.
+        name = meth.name
+        owner ||= meth.owner
+        owner_name = (owner.name || '').gsub('::', '/')
+        kind ||= (owner.instance_method(name) rescue nil) ? :i : :c
+        kind = :i if owner_name == "Kernel" # ???
+        a_name = name.to_s.dup
+        a_name = a_name.gsub(/([^a-z0-9_~])/i){|m| "-%X" % [ m.ord ]}
+        a_name.sub!(/^-/, '')
+        a_name = "method-#{kind}-#{a_name}"
+        subdir = ruby_doc_version(RUBY_VERSION)
+        "http://www.ruby-doc.org/#{subdir}/#{owner_name}.html\##{a_name}"
+    end
+
+    def ruby_doc_version ruby_version
+      case ruby_version
+      when /^3\.4\./
+        "3.4.1"
+      when /^3\.3\./
+        "3.3.7"
+      when /^3\.2\./
+        "3.2.5"
+      when /^3\.1\./
+        "3.1.5"
+      when /^3\.0\./
+        "3.0.6"
+      when /^2\./
+        "2.7.8"
+      else
+        ruby_version
+      end
+    end
+
+    def file_line_to_href file, lineno = nil
+      link = file.sub(%r{^/}, '-')
       link = link.split('/').map{|s| e s}.join('/')
       link = url_root("/file/#{link}")
-      link << ":#{lineno}\##{lineno - 2}" if lineno
+      if lineno
+        lineno_back = [lineno - 2, 1].max
+        link << ":#{lineno}\##{lineno_back}"
+      end
       link
     end
 
@@ -97,8 +139,7 @@ module RackConsole
     def format_module obj
       return module_name_tag(h(obj.inspect)) unless obj && obj.name
       path = obj.name.to_s.split('::')
-      result = ''
-      name = ''; pre = ''
+      result, name, pre = ''.dup, ''.dup, ''
       path.each do | n |
         name << n
         href = url_root("/module/#{name}")
@@ -209,11 +250,11 @@ module RackConsole
           ansi = obj.ai(indent: 2, html: false, index: false)
           ansi2html(ansi)
         else
-          '<pre>' << wrap_lines(safe_pp(obj)) << '</pre>'
+          "<pre>#{wrap_lines(safe_pp(obj))}</pre>"
         end
       rescue
         STDERR.puts "  #{$!.inspect}: falling back to #inspect for #{obj.class}\n  #{$!.backtrace * "\n  "}"
-        '<pre>' << wrap_lines(obj.inspect) << '</pre>'
+        "<pre>#{wrap_lines(obj.inspect)}</pre>"
       end
     end
 
@@ -229,7 +270,7 @@ module RackConsole
     end
 
     def format_as_terminal str
-      str &&= str.to_s.force_encoding('UTF-8')
+      str &&= str.to_s.dup.force_encoding('UTF-8')
       if str.blank?
         %Q{<span class="none">NONE</span>}
       else
@@ -243,5 +284,26 @@ module RackConsole
       '</div>'
     end
   end
-end
 
+  class SemanticVersion
+    def initialize(str, max = 20)
+      @v = str.strip.split('.').map(&:to_i).reverse
+      @max = max
+    end
+
+    def to_s
+      @v.reverse.join('.')
+    end
+
+    def dec!
+      @v.size.times do | i |
+        if (@v[i] -= 1) >= 0
+          break
+        else
+          @v[i] = @max
+        end
+      end
+      self
+    end
+  end
+end
